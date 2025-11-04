@@ -1,0 +1,3 @@
+rootProject.name = 'mcargo'
+
+include 'user', 'order', 'gateway', 'delivery', 'hub', 'eureka-server', 'common', 'auth'
