@@ -24,9 +24,8 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(
                 e.getResponseCode().getHttpStatus()).body(
-                        ApiResponse.of(
-                                e.getResponseCode().getHttpStatus()
-                        )
-        );
+                        ApiResponse.of(e.getResponseCode())
+                );
     }
+
 }
