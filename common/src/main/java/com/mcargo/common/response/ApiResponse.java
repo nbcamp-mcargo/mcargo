@@ -10,19 +10,19 @@ import org.springframework.http.HttpStatus;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
-    private final HttpStatus httpStatus;
+    private final ResponseCode responseCode;
 
     private final T data;
 
-    public static<T> ApiResponse<T> of(HttpStatus httpStatus) {
+    public static<T> ApiResponse<T> of(ResponseCode responseCode) {
         return ApiResponse.<T>builder()
-                .httpStatus(httpStatus)
+                .responseCode(responseCode)
                 .build();
     }
 
-    public static<T> ApiResponse<T> of(HttpStatus httpStatus, T data) {
+    public static<T> ApiResponse<T> of(ResponseCode responseCode, T data) {
         return ApiResponse.<T>builder()
-                .httpStatus(httpStatus)
+                .responseCode(responseCode)
                 .data(data)
                 .build();
     }
