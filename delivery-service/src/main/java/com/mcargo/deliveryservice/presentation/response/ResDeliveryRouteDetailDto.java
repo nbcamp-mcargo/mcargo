@@ -7,12 +7,13 @@ import java.util.UUID;
 
 public record ResDeliveryRouteDetailDto(
    UUID deliveryRouteId,
+   UUID deliveryId,
    int sequence,
    UUID fromHubId,
    UUID toHubId,
-   int estimatedDistance,
-   LocalDateTime estimatedTime,
-   int actualDistance,
+   Long predictedDistance,
+   Long predictedTime,
+   Long actualDistance,
    LocalDateTime actualTime,
    UUID deliveryDriverId,
    DeliveryRouteStatusEnum deliveryRouteStatus,

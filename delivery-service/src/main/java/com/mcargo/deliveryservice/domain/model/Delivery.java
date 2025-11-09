@@ -1,6 +1,8 @@
 package com.mcargo.deliveryservice.domain.model;
 
 import com.mcargo.common.entity.BaseEntity;
+import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -77,5 +79,65 @@ public class Delivery extends BaseEntity {
         for(DeliveryRoute route : this.deliveryRoutes) {
             route.softDelete();
         }
+    }
+    /**
+     * route의 상태에 따라 delivery 상태를 다시 계산
+     *
+     * 배송 생성 직후 : ACCEPTED
+     * 첫 번째 허브 도착 & 출발 전 : WAITING_AT_HUB
+     * 허브 이동중 : IN_TRANSIT
+     * 최종 허브 도착 : ARRIVE_AT_DESTINATION_HUB
+     * 배송 완료 : COMPLETE
+     */
+    public void refreshStatusByRoutes() {
+        if (this.deliveryStatus == DeliveryStatusEnum.CANCELED) {
+            return;
+        }
+
+        boolean anyInTransit = deliveryRoutes.stream()
+                .anyMatch(route -> route.getDeliveryRouteStatus() == DeliveryRouteStatusEnum.IN_TRANSIT);
+
+        boolean lastHubArrived = deliveryRoutes.stream()
+                .filter(route -> isLastHubRoute(route.getSequence()))
+                .anyMatch(route -> route.getDeliveryRouteStatus() == DeliveryRouteStatusEnum.ARRIVE_AT_DESTINATION_HUB);
+
+        boolean allCompleted = deliveryRoutes.stream()
+                .allMatch(route -> route.getDeliveryRouteStatus() == DeliveryRouteStatusEnum.COMPLETE);
+
+        boolean isOutForDelivery = deliveryRoutes.stream()
+                .filter(route -> isLastCompanyRoute(route.getSequence()))
+                .anyMatch(route -> route.getDeliveryRouteStatus() == DeliveryRouteStatusEnum.IN_TRANSIT);
+
+
+        if(allCompleted) {
+            this.deliveryStatus = DeliveryStatusEnum.COMPLETE;
+        } else if(lastHubArrived) {
+            this.deliveryStatus = DeliveryStatusEnum.ARRIVE_AT_DESTINATION_HUB;
+        } else if(anyInTransit) {
+            this.deliveryStatus = DeliveryStatusEnum.IN_TRANSIT;
+        } else if(deliveryRoutes.stream()
+                .anyMatch(route -> route.getDeliveryRouteStatus() == DeliveryRouteStatusEnum.WAITING_AT_HUB)) {
+            this.deliveryStatus = DeliveryStatusEnum.WAITING_AT_HUB;
+        } else if(isOutForDelivery) {
+            this.deliveryStatus = DeliveryStatusEnum.OUT_FOR_DELIVERY;
+        }
+    }
+
+    // 마지막 허브인지 판별
+    public boolean isLastHubRoute(int sequence) {
+        return sequence == maxSequence()-1;
+    }
+
+    // 업체 배송 판별
+    public boolean isLastCompanyRoute(int sequence) {
+        return sequence == maxSequence();
+    }
+
+    public int maxSequence() {
+        int maxSequence = deliveryRoutes.stream()
+                .mapToInt(DeliveryRoute::getSequence)
+                .max()
+                .orElse(0);
+        return maxSequence;
     }
 }

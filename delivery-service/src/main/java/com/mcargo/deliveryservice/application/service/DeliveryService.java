@@ -5,7 +5,6 @@ import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
 import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import com.mcargo.deliveryservice.domain.model.Delivery;
 import com.mcargo.deliveryservice.domain.model.DeliveryRoute;
-import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
 import com.mcargo.deliveryservice.domain.model.DeliveryStatusEnum;
 import com.mcargo.deliveryservice.domain.repository.DeliveryRepository;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryDto;
@@ -98,49 +97,6 @@ public class DeliveryService {
         return resDeliveryDto;
     }
 
-    public ResDeliveryStatusDto updateDeliveryStatus(UUID deliveryId, DeliveryStatusEnum deliveryStatus) {
-
-        ResDeliveryStatusDto resDeliveryStatusDto = ResDeliveryStatusDto.builder()
-                .deliveryId(deliveryId)
-                .deliveryStatus(deliveryStatus)
-                .build();
-
-        return resDeliveryStatusDto;
-    }
-
-    public Page<ResDeliveryDetailDto> getDeliveries(Pageable pageable) {
-        Page<Delivery> deliveryPage = deliveryRepository.findAllByDeletedAtIsNull(pageable);
-
-        return deliveryPage.map(this::toResDeliveryDetailDto);
-    }
-
-    private ResDeliveryDetailDto toResDeliveryDetailDto(Delivery delivery) {
-        return new  ResDeliveryDetailDto(
-                delivery.getDeliveryId(),
-                delivery.getOrderId(),
-                delivery.getDeliveryStatus(),
-                delivery.getAddress(),
-                delivery.getReceiverUserId(),
-                delivery.getReceiverSlackId(),
-                delivery.getCreatedAt(),
-                delivery.getCreatedBy(),
-                delivery.getUpdatedAt(),
-                delivery.getUpdatedBy()
-        );
-    }
-
-    public ResDeliveryDetailDto getDeliveryDetail(UUID deliveryId) {
-        Delivery delivery = findById(deliveryId);
-
-        return toResDeliveryDetailDto(delivery);
-    }
-
-    public Page<ResDeliveryDetailDto> searchDeliveries(DeliverySearchParam deliverySearchParam, Pageable pageable) {
-        Page<Delivery> deliveryPage = deliveryRepository.searchDeliveries(deliverySearchParam, pageable);
-
-        return deliveryPage.map(this::toResDeliveryDetailDto);
-    }
-
     @Transactional
     public void cancelDelivery(UUID deliveryId) {
         Delivery delivery = findById(deliveryId);
@@ -158,6 +114,49 @@ public class DeliveryService {
                 .orElseThrow(() -> new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
 
         delivery.softDeleteWithRoutes();
+    }
+
+    public Page<ResDeliveryDetailDto> getDeliveries(Pageable pageable) {
+        Page<Delivery> deliveryPage = deliveryRepository.findAllByDeletedAtIsNull(pageable);
+
+        return deliveryPage.map(this::toResDeliveryDetailDto);
+    }
+
+    public ResDeliveryDetailDto getDeliveryDetail(UUID deliveryId) {
+        Delivery delivery = findById(deliveryId);
+
+        return toResDeliveryDetailDto(delivery);
+    }
+
+    public Page<ResDeliveryDetailDto> searchDeliveries(DeliverySearchParam deliverySearchParam, Pageable pageable) {
+        Page<Delivery> deliveryPage = deliveryRepository.searchDeliveries(deliverySearchParam, pageable);
+
+        return deliveryPage.map(this::toResDeliveryDetailDto);
+    }
+
+    public ResDeliveryStatusDto updateDeliveryStatus(UUID deliveryId, DeliveryStatusEnum deliveryStatus) {
+
+        ResDeliveryStatusDto resDeliveryStatusDto = ResDeliveryStatusDto.builder()
+                .deliveryId(deliveryId)
+                .deliveryStatus(deliveryStatus)
+                .build();
+
+        return resDeliveryStatusDto;
+    }
+
+    private ResDeliveryDetailDto toResDeliveryDetailDto(Delivery delivery) {
+        return new  ResDeliveryDetailDto(
+                delivery.getDeliveryId(),
+                delivery.getOrderId(),
+                delivery.getDeliveryStatus(),
+                delivery.getAddress(),
+                delivery.getReceiverUserId(),
+                delivery.getReceiverSlackId(),
+                delivery.getCreatedAt(),
+                delivery.getCreatedBy(),
+                delivery.getUpdatedAt(),
+                delivery.getUpdatedBy()
+        );
     }
 
     public Delivery findById(UUID deliveryId) {

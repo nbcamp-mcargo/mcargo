@@ -1,7 +1,5 @@
 package com.mcargo.deliveryservice.domain.model;
 
-import lombok.Getter;
-
 public enum DeliveryStatusEnum {
     ACCEPTED,
     WAITING_AT_HUB,

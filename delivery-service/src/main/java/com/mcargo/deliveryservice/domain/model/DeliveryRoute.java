@@ -46,6 +46,9 @@ public class DeliveryRoute extends BaseEntity {
     @Column(nullable = false)
     private UUID deliveryDriverId;
 
+    @Column(name = "delivery_id", insertable = false, updatable = false)
+    private UUID deliveryId;    // 읽기 전용 순수 FK 필드
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id", nullable = false)
     private Delivery delivery;
@@ -79,5 +82,14 @@ public class DeliveryRoute extends BaseEntity {
 
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void updateStatus(DeliveryRouteStatusEnum deliveryRouteStatus) {
+        this.deliveryRouteStatus = deliveryRouteStatus;
+        delivery.refreshStatusByRoutes();
+    }
+
+    public boolean isLastHubRoute() {
+        return delivery.isLastHubRoute(this.sequence);
     }
 }
