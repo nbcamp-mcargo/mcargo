@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "p_delivery_route")
-@Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,12 +31,15 @@ public class DeliveryRoute extends BaseEntity {
     private UUID toHubId;
 
     @Column(nullable = false)
-    private int estimatedDistance;
+    private DeliveryRouteStatusEnum deliveryRouteStatus;
 
     @Column(nullable = false)
-    private LocalDateTime estimatedTime;
+    private Long predictedDistance;
 
-    private int actualDistance;
+    @Column(nullable = false)
+    private Long predictedTime;
+
+    private Long actualDistance;
 
     private LocalDateTime actualTime;
 
@@ -48,4 +50,34 @@ public class DeliveryRoute extends BaseEntity {
     @JoinColumn(name = "delivery_id", nullable = false)
     private Delivery delivery;
 
+    public void addDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    public static DeliveryRoute createDeliveryRoute(int sequence,
+                                                    UUID fromHubId,
+                                                    UUID toHubId,
+                                                    Long predictedDistance,
+                                                    Long predictedTime,
+                                                    UUID deliveryDriverId) {
+        DeliveryRoute deliveryRoute = new DeliveryRoute();
+        deliveryRoute.sequence = sequence;
+        deliveryRoute.fromHubId = fromHubId;
+        deliveryRoute.toHubId = toHubId;
+        deliveryRoute.deliveryRouteStatus = DeliveryRouteStatusEnum.ACCEPTED;
+        deliveryRoute.predictedDistance = predictedDistance;
+        deliveryRoute.predictedTime = predictedTime;
+        deliveryRoute.deliveryDriverId = deliveryDriverId;
+
+        return deliveryRoute;
+    }
+
+    public void cencelDeliveryRoute() {
+        this.deliveryRouteStatus = DeliveryRouteStatusEnum.CANCELED;
+        // TODO : 사용자 정보 추가
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

@@ -12,5 +12,5 @@ import java.util.UUID;
 
 public record DeliverySearchParam(
         UUID orderId,
-        UUID receiverUserId,
+        Long receiverUserId,
         DeliveryStatusEnum deliveryStatus) {}

@@ -1,0 +1,30 @@
+package com.mcargo.deliveryservice.domain.exception;
+
+import com.mcargo.common.response.ResponseCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+public enum DeliveryErrorCode implements ResponseCode {
+    DELIVERY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 배송이 생성된 주문입니다."),
+    DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 정보가 존재하지 않습니다."),
+    DELIVERY_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "이미 취소된 배송입니다.");
+
+    private final HttpStatus httpStatus;
+    private final String message;
+
+    DeliveryErrorCode(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+    @Override
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+}
