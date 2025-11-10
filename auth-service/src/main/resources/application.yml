@@ -9,7 +9,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: ${DDL_AUTO}   # (처음엔 create, 운영에선 none 권장)
+      ddl-auto: update   # (처음엔 create, 운영에선 none 권장)
     show-sql: true       # SQL 로그 출력
     properties:
       hibernate:
@@ -18,12 +18,12 @@ spring:
         default_schema: public
 
 server:
-  port: ${PORT}
+  port: 19096
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL}
+      defaultZone: http://localhost:19090/eureka/
 
 service:
   jwt:
