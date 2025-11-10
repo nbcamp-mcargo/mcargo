@@ -3,38 +3,38 @@ spring:
     name: gateway-service
   main:
     web-application-type: reactive
-cloud:
-  gateway:
-    routes:
-      - id: product-service
-        uri: lb://product-service
-        predicates:
-          - Path=/product/**
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/products/**
 
-      - id: delivery-service
-        url: lb://delivery-service
-        predicates:
-          - Path=/delivery/**
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/deliverys/**
 
-      - id: hub-service
-        url: lb://hub-service
-        predicates:
-          - Path=/hub/**
+        - id: hub-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/hubs/**
 
-      - id: order-service
-        uri: lb://order-service
-        predicates:
-          - Path=/order/**
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/orders/**
 
-      - id: user-service
-        url: lb://user-service
-        predicates:
-          - Path=/user/**
-
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auths/**
+          filters:
+            - StripPrefix=0
     discovery:
       locator:
         enabled: true
-
 eureka:
   client:
     service-url:
@@ -42,3 +42,7 @@ eureka:
 
 server:
   port: 19091
+
+service:
+  jwt:
+    secret-key: ${JWT_SECRET:7ouTf7qUVe9KZfJh4QYOGe56us3HgAvamCkyntP0MkY=}
