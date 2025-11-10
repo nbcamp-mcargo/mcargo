@@ -24,7 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/deliverys/routes")
+@RequestMapping("/deliveries/routes")
 public class DeliveryRouteController {
     private final DeliveryRouteService deliveryRouteService;
 
