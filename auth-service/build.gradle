@@ -21,6 +21,12 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.2"
+    }
+}
+
 jar {
     enabled = true
 }

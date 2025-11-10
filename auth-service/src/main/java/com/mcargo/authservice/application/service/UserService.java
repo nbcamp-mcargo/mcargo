@@ -7,18 +7,17 @@ import com.mcargo.authservice.domain.repository.RefreshTokenRepository;
 import com.mcargo.authservice.domain.repository.UserRepository;
 import com.mcargo.authservice.presentation.dto.request.UserLoginRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserSignUpRequestDto;
-import com.mcargo.authservice.presentation.dto.response.LogoutResponseDto;
 import com.mcargo.authservice.presentation.dto.response.UserInformationDto;
 import com.mcargo.authservice.presentation.dto.response.UserLoginResponseDto;
 import com.mcargo.authservice.presentation.dto.response.UserSignUpResponseDto;
 import com.mcargo.common.exception.UserException;
 import com.mcargo.common.response.UserResponseCode;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +42,9 @@ public class UserService {
             requestDto.role()
         );
         userRepository.save(user);
+        System.out.println("user.getUsername() = " + user.getUsername());
+        System.out.println("user.getNickname() = " + user.getNickname());
+        System.out.println("user.getEmail() = " + user.getEmail());
         return new UserSignUpResponseDto(
             user.getUsername(),
             user.getNickname(),
@@ -90,23 +92,23 @@ public class UserService {
             accessToken, refreshToken, jwtUtil.getAccessTokenExpiration(), userInfo);
     }
 
-    // 로그아웃
-    @Transactional
-    public LogoutResponseDto logout(Long userId) {
-        // 1 사용자 조회
-        User user = userRepository.findActiveById(userId)
-            .orElseThrow(() -> null);
-        System.out.println("user = " + user);
-        System.out.println("user.getUsername() = " + user.getUsername());
-        System.out.println("user.getEmail() = " + user.getEmail());
-        // 2 해당 사용자의 모든 리프레시 토큰 삭제 (토큰 무효화)
-        if (user != null) {
-            refreshTokenRepository.deleteByUser(user);
-        }
-        // 3 성공 응답 반환
-        return new LogoutResponseDto("로그아웃 되었습니다.",
-            LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-    }
+//    // 로그아웃
+//    @Transactional
+//    public LogoutResponseDto logout(Long userId) {
+//        // 1 사용자 조회
+//        User user = userRepository.findActiveById(userId)
+//            .orElseThrow(() -> null);
+//        System.out.println("user = " + user);
+//        System.out.println("user.getUsername() = " + user.getUsername());
+//        System.out.println("user.getEmail() = " + user.getEmail());
+//        // 2 해당 사용자의 모든 리프레시 토큰 삭제 (토큰 무효화)
+//        if (user != null) {
+//            refreshTokenRepository.deleteByUser(user);
+//        }
+//        // 3 성공 응답 반환
+//        return new LogoutResponseDto("로그아웃 되었습니다.",
+//            LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+//    }
 
 
 }
