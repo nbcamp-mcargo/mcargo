@@ -9,21 +9,26 @@ spring:
         - id: delivery-service
           uri: lb://delivery-service
           predicates:
-            - Path=/delivery/**
+            - Path=/deliveries/**
 
         - id: hub-service
           uri: lb://hub-service
           predicates:
-            - Path=/hub/**
+            - Path=/hubs/**
 
         - id: order-service
           uri: lb://order-service
           predicates:
-            - Path=/order/**
+            - Path=/orders/**
 
         - id: user-service
           uri: lb://user-service
             - Path=/user/**
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auths/**
 
       discovery:
         locator:
