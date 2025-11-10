@@ -1,11 +1,11 @@
 spring:
   application:
     name: delivery-service
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${DELIVERY_DB_URL}
-    username: ${DELIVERY_DB_USERNAME}
-    password: ${DELIVERY_DB_PASSWORD}
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: ${DELIVERY_DB_URL}
+#    username: ${DELIVERY_DB_USERNAME}
+#    password: ${DELIVERY_DB_PASSWORD}
 
 server:
   port: 19098
