@@ -17,16 +17,15 @@ public class GlobalExceptionHandler {
         ResponseCode code = e.getResponseCode();
 
         log.error("[{}] {} ({})",
-            e.getClass().getSimpleName(),
-            code.getHttpStatus(),
-            e.getMessage()
+                e.getClass().getSimpleName(),
+                code.getHttpStatus(),
+                e.getMessage()
         );
 
         return ResponseEntity.status(
-            e.getResponseCode().getHttpStatus()).body(
-            ApiResponse.of(
-                e.getResponseCode()
-            )
-        );
+                e.getResponseCode().getHttpStatus()).body(
+                        ApiResponse.of(e.getResponseCode())
+                );
     }
+
 }
