@@ -3,33 +3,33 @@ spring:
     name: gateway-service
   main:
     web-application-type: reactive
-cloud:
-  gateway:
-    routes:
-      - id: product-service
-        uri: lb://product-service
-        predicates:
-          - Path=/product/**
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/product/**
 
-      - id: delivery-service
-        url: lb://delivery-service
-        predicates:
-          - Path=/delivery/**
+        - id: delivery-service
+          uri: lb://delivery-service
+          predicates:
+            - Path=/delivery/**
 
-      - id: hub-service
-        url: lb://hub-service
-        predicates:
-          - Path=/hub/**
+        - id: hub-service
+          uri: lb://hub-service
+          predicates:
+            - Path=/hub/**
 
-      - id: order-service
-        uri: lb://order-service
-        predicates:
-          - Path=/order/**
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order/**
 
-      - id: user-service
-        url: lb://user-service
-        predicates:
-          - Path=/user/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
 
     discovery:
       locator:
