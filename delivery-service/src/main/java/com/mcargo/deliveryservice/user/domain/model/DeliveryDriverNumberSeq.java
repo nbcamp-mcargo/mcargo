@@ -27,6 +27,22 @@ public class DeliveryDriverNumberSeq {
     public void increse() {
         this.nextNumber++;
     }
+
+    public DeliveryDriverNumberSeq() {}
+
+    public DeliveryDriverNumberSeq(DeliveryDriverType deliveryDriverType, UUID hubId, Integer nextNumber) {
+        this.deliveryDriverType = deliveryDriverType;
+        this.hubId = hubId;
+        this.nextNumber = nextNumber;
+    }
+
+    public static DeliveryDriverNumberSeq createHubDriver() {
+        return new DeliveryDriverNumberSeq(DeliveryDriverType.HUB_DRIVER, null, 1);
+    }
+
+    public static DeliveryDriverNumberSeq createCompanyDriver(UUID hubId) {
+        return new DeliveryDriverNumberSeq(DeliveryDriverType.COMPANY_DRIVER, hubId, 1);
+    }
 }
 
 /*

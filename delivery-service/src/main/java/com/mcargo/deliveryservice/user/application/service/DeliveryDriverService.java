@@ -45,7 +45,6 @@ public class DeliveryDriverService {
         );
 
         deliveryDriverJpaRepository.save(driver);
-
     }
 
     public UUID addHubDeliveryDriver(UUID fromHubId) {
