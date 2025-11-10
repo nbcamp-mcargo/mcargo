@@ -1,9 +1,15 @@
 spring:
   application:
     name: hub-service
-
-server:
-  port: 19094
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: http://localhost:19098
+      discovery:
+        enabled: true
+        service-id: config-server
+      profile: default
 
 eureka:
   client:

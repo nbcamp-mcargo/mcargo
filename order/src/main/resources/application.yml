@@ -1,9 +1,15 @@
 spring:
   application:
     name: order-service
-
-server:
-  port: 19093
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      uri: http://localhost:19098
+      discovery:
+        enabled: true
+        service-id: config-server
+      profile: default
 
 eureka:
   client:
