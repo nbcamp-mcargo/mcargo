@@ -1,5 +1,5 @@
 .env
-**/delivery-service/*.http
+**/delivery-service/**/*.http
 
 HELP.md
 .gradle
