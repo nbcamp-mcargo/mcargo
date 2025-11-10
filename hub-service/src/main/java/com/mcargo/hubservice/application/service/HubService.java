@@ -1,7 +1,7 @@
 package com.mcargo.hubservice.application.service;
 
-import com.mcargo.common.exception.HubException;
-import com.mcargo.common.response.HubResponseCode;
+import com.mcargo.hubservice.domain.exception.HubException;
+import com.mcargo.hubservice.domain.response.HubResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubProduct;

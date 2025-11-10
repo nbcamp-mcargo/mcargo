@@ -1,7 +1,7 @@
 package com.mcargo.hubservice.presentation.controller;
 
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.HubResponseCode;
+import com.mcargo.hubservice.domain.response.HubResponseCode;
 import com.mcargo.hubservice.application.service.HubRouteService;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteRequest;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteResponse;

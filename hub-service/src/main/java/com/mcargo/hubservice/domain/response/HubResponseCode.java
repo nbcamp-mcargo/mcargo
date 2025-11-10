@@ -1,5 +1,6 @@
-package com.mcargo.common.response;
+package com.mcargo.hubservice.domain.response;
 
+import com.mcargo.common.response.ResponseCode;
 import org.springframework.http.HttpStatus;
 
 public enum HubResponseCode implements ResponseCode {
