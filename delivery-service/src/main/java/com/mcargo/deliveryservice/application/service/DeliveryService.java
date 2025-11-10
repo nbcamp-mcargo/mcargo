@@ -53,7 +53,7 @@ public class DeliveryService {
                 reqDeliveryDto.receiverUserId(),
                 reqDeliveryDto.receiverSlackId());
 
-        List<DeliveryRoute> routes = deliveryRouteService.createDeliveryRoute(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId());
+        List<DeliveryRoute> routes = deliveryRouteService.createDeliveryRoute(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId(), reqDeliveryDto.address());
 
         // cascade로 DeliveryRoute도 함께 저장될 수 있도록
         for(DeliveryRoute route : routes){

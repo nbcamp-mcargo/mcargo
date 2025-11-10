@@ -10,7 +10,7 @@ import com.mcargo.deliveryservice.domain.repository.DeliveryRouteReposotory;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryRouteStatusDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteStatusDto;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class DeliveryRouteService {
 
     private final DeliveryRouteReposotory deliveryRouteReposotory;
 
-    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId){
+    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, String address){
         // TODO: 허브 API로 경로 정보 조회
 //            List<HubRouteInfo> hubRoutes = hubClient.getRoutes(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId());
         List<HubRouteInfo> hubRoutes = getMockHubRoutes(
