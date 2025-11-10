@@ -1,14 +1,23 @@
 spring:
   application:
     name: delivery-service
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: ${DELIVERY_DB_URL}
-#    username: ${DELIVERY_DB_USERNAME}
-#    password: ${DELIVERY_DB_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mcargo
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 
 server:
-  port: 19098
+  port: 19097
 
 eureka:
   client:
