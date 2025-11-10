@@ -1,10 +1,12 @@
-package com.mcargo.common;
+package com.nbcamp.delivery;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class CommonApplicationTests {
+@ActiveProfiles("test")
+class DeliveryApplicationTests {
 
     @Test
     void contextLoads() {

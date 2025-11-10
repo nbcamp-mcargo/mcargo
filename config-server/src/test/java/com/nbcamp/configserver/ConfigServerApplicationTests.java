@@ -1,12 +1,10 @@
-package com.mcargo.userservice;
+package com.nbcamp.configserver;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@Disabled
 @SpringBootTest
-class UserServiceApplicationTests {
+class ConfigServerApplicationTests {
 
 	@Test
 	void contextLoads() {

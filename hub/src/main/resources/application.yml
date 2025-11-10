@@ -1,6 +1,6 @@
 spring:
   application:
-    name: order-service
+    name: hub-service
   config:
     import: "configserver:"
   cloud:
