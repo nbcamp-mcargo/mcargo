@@ -2,14 +2,14 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://localhost:5433/mydatabase
-    username: root
-    password: ab1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update   # (처음엔 create, 운영에선 none 권장)
+      ddl-auto: ${DDL_AUTO}   # (처음엔 create, 운영에선 none 권장)
     show-sql: true       # SQL 로그 출력
     properties:
       hibernate:
@@ -18,12 +18,12 @@ spring:
         default_schema: public
 
 server:
-  port: 19096
+  port: ${PORT}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL}
 
 service:
   jwt:
