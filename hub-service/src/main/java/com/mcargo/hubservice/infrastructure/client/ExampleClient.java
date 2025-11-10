@@ -1,4 +1,4 @@
-package com.mcargo.hubservice.infrastructure.repository.client;
+package com.mcargo.hubservice.infrastructure.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
