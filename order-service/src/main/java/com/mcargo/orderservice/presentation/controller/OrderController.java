@@ -1,0 +1,63 @@
+package com.mcargo.orderservice.presentation.controller;
+
+import com.mcargo.common.response.ApiResponse;
+import com.mcargo.common.response.OrderResponseCode;
+import com.mcargo.orderservice.application.service.OrderService;
+import com.mcargo.orderservice.presentation.dto.CreateOrderRequest;
+import com.mcargo.orderservice.presentation.dto.getOrderResponse;
+import com.mcargo.orderservice.presentation.dto.SearchOrderRequest;
+import com.mcargo.orderservice.presentation.dto.UpdateOrderRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+public class OrderController {
+
+    private OrderService orderService;
+
+    // 주문은 업체 담당자만 가능
+    @PostMapping
+    public ApiResponse<Void> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        orderService.createOrder(request);
+        return ApiResponse.of(OrderResponseCode.ORDER_CREATED);
+    }
+
+    @GetMapping
+    public ApiResponse<Page<getOrderResponse>> getOrderAll(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "10") int size,
+                                                           @RequestParam(defaultValue = "createAt") String sortBy,
+                                                           @RequestParam(defaultValue = "true") Boolean isDescending) {
+        return ApiResponse.of(OrderResponseCode.ORDER_FOUND, orderService.getOrderAll(page, size, sortBy, isDescending));
+    }
+
+    @GetMapping("/{orderId}")
+    public ApiResponse<Void> readOrder(@PathVariable UUID orderId) {
+        orderService.readOrder(orderId);
+        return ApiResponse.of(OrderResponseCode.ORDER_FOUND);
+    }
+
+    @PatchMapping("/{orderId}")
+    public ApiResponse<Void> updateOrder(@PathVariable UUID orderId, @RequestBody UpdateOrderRequest request) {
+        orderService.updateOrder(orderId, request);
+        return ApiResponse.of(OrderResponseCode.ORDER_UPDATED);
+    }
+
+    //주문 취소는 수령 업체 담당자만 가능
+    @DeleteMapping("/{orderId}")
+    public ApiResponse<Void> deleteOrder(@PathVariable UUID orderId) {
+        Long userId = 1L;
+        orderService.deleteOrder(userId, orderId);
+        return ApiResponse.of(OrderResponseCode.ORDER_DELETED);
+    }
+
+//    @GetMapping("/search")
+//    public ApiResponse<Page<getOrderResponse>> searchOrder(@RequestBody SearchOrderRequest request) {
+//        return ApiResponse.of(OrderResponseCode.ORDER_FOUND, OrderService.SearchOrder(request));
+//    }
+}

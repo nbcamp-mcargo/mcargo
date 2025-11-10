@@ -1,6 +1,11 @@
 spring:
   application:
     name: order-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${ORDER_DB_URL}
+    username: ${ORDER_DB_USERNAME}
+    password :  ${ORDER_DB_PASSWORD}
 
 server:
   port: 19093
