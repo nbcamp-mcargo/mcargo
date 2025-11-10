@@ -1,13 +1,13 @@
-package com.mcargo.common;
+package com.nbcamp.configserver;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CommonApplicationTests {
+class ConfigServerApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }

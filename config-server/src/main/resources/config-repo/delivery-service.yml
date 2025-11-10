@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DELIVERY_DB_URL}
+    username: ${DELIVERY_DB_USERNAME}
+    password: ${DELIVERY_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+
+server:
+  port: 19097

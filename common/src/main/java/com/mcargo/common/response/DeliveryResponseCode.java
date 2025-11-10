@@ -1,7 +1,9 @@
 package com.mcargo.common.response;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
 public enum DeliveryResponseCode implements ResponseCode {
 
     DELIVERY_INFO_CREATED(HttpStatus.CREATED, "새로운 배송 정보가 생성되었습니다."),
@@ -15,11 +17,6 @@ public enum DeliveryResponseCode implements ResponseCode {
     private final HttpStatus httpStatus;
 
     private final String message;
-
-    DeliveryResponseCode(HttpStatus httpStatus, String message) {
-        this.httpStatus = httpStatus;
-        this.message = message;
-    }
 
     @Override
     public HttpStatus getHttpStatus() {
