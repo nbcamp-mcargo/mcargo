@@ -15,10 +15,6 @@ allprojects {
         mavenCentral()
     }
 
-    ext {
-        set('springCloudVersion', "2024.0.2")
-    }
-
     tasks.withType(Test).configureEach {
         useJUnitPlatform()
     }
@@ -45,12 +41,6 @@ subprojects {
 
     dependencies {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-        }
     }
 
     tasks.named('test') {
