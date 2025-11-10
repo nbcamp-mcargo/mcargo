@@ -1,12 +1,10 @@
-package com.nbcamp.user;
+package com.nbcamp.configserver;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@Disabled
 @SpringBootTest
-class UserApplicationTests {
+class ConfigServerApplicationTests {
 
 	@Test
 	void contextLoads() {
