@@ -6,11 +6,11 @@ spring:
     password: ${DELIVERY_DB_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
 
 server:
