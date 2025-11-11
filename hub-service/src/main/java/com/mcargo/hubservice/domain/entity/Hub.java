@@ -32,7 +32,7 @@ public class Hub extends BaseEntity {
 
     private Integer lastDriverNumber; // 마지막 업체 배송 담당자 번호
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hub_id") // 외래키를 상대 테이블에 생성
     private List<HubProduct> hubProducts;
 
