@@ -1,0 +1,80 @@
+package com.mcargo.authservice.domain.entity;
+
+import com.mcargo.common.auth.UserRole;
+import com.mcargo.common.entity.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "p_user")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "username", nullable = false, unique = true, length = 30)
+    private String username;
+
+    @Column(name = "nickname", nullable = false, unique = true, length = 30)
+    private String nickname;
+
+    @Column(name = "email", nullable = false, unique = true, length = 50)
+    private String email;
+
+    @Column(name = "password", nullable = false, length = 60)
+    private String password;
+
+//    @Column(name = "address", nullable = false)
+//    private String address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
+    // 정적 메서드로 User 생성
+    public static User createUser(String username, String nickname,
+        String email, String password, UserRole role) {
+        User user = new User();
+        user.username = username;
+        user.nickname = nickname;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        return user;
+    }
+
+    /**
+     * 사용자 정보 업데이트
+     */
+    public void updateUser(String username, String nickname, String email) {
+        if (username != null) {
+            this.username = username;
+        }
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+        if (email != null) {
+            this.email = email;
+        }
+    }
+
+    /**
+     * 사용자 비밀번호 변경
+     */
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+}

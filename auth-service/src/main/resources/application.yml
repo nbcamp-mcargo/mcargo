@@ -1,11 +1,32 @@
 spring:
-    application:
-        name: auth-service
+  application:
+    name: auth-service
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # (처음엔 create, 운영에선 none 권장)
+    show-sql: true       # SQL 로그 출력
+    properties:
+      hibernate:
+        format_sql: true # SQL을 보기 좋게 출력
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
 
 server:
-    port: 19096
+  port: 19096
 
 eureka:
-    client:
-        service-url:
-            defaultZone: http://localhost:19090/eureka/
+  client:
+    service-url:
+      defaultZone: http://localhost:19090/eureka/
+
+service:
+  jwt:
+    access-expiration: 3600000 # 액세스 토큰 만료시간 (60분 = 3,600,000ms)
+    refresh-expiration: 604800000 # 리프레시 토큰 만료시간 (7일 = 604,800,000ms)
+    secret-key: ${JWT_SECRET:7ouTf7qUVe9KZfJh4QYOGe56us3HgAvamCkyntP0MkY=}
