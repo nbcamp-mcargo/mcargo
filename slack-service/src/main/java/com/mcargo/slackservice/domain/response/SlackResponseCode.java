@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum SlackResponseCode implements ResponseCode {
 
-    SLACK_OK(HttpStatus.OK, "사용자가 로그인 했습니다."),
+    SLACK_OK(HttpStatus.OK, "성공적으로 메시지를 송신했습니다."),
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
     SLACK_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "메시지 송신에 실패했습니다.");
