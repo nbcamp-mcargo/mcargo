@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -246,16 +245,14 @@ public class HubService {
     }
 
     // 허브 반환. 허브 경로에서 사용
-    protected Hub getHub2(UUID hubId) {
+    protected Hub getHubAsHub(UUID hubId) {
         return hubRepository.findById(hubId).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
 
     }
 
-    // 모든 허브id 반환. 허브 경로에서 사용
-    protected List<UUID> getAllHubId() {
-        return hubRepository.findAllHub().stream()
-                .map(Hub::getId)
-                .collect(Collectors.toList());
+    // 모든 허브 반환. 허브 경로에서 사용
+    protected List<Hub> getAllHub() {
+        return hubRepository.findAll();
     }
 }
