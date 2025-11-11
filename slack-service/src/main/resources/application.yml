@@ -27,3 +27,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_SERVICE_URL}
 
+slack:
+  token: ${SLACK_TOKEN}
