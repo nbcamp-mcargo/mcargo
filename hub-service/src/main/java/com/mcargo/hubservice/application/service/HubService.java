@@ -10,7 +10,6 @@ import com.mcargo.hubservice.domain.repository.HubRepository;
 import com.mcargo.hubservice.infrastructure.client.CompanyClient;
 import com.mcargo.hubservice.infrastructure.client.UserClient;
 import com.mcargo.hubservice.presentation.dto.*;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -123,7 +122,7 @@ public class HubService {
     // ㅡㅡ허브 상품 관련ㅡㅡ
     // 허브상품 추가
     @Transactional
-    public void addHubProduct(@Valid addHubProductRequest request) {
+    public void addHubProduct(AddHubProductRequest request) {
         Hub findHub = hubRepository.findById(request.hubId()).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
 
