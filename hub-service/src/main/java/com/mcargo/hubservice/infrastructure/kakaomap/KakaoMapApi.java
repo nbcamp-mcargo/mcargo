@@ -2,6 +2,7 @@ package com.mcargo.hubservice.infrastructure.kakaomap;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mcargo.hubservice.application.util.RouteUtils;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
@@ -12,7 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
-public class KakaoMapApi {
+public class KakaoMapApi implements RouteUtils {
+
     @Value("${kakao.rest-api-key}")
     private String kakaoRestApiKey;
 

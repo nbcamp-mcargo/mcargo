@@ -176,7 +176,6 @@ public class HubService {
                 hp.getStatus(),
                 hp.getStock()
         ));
-
     }
 
     // 허브상품 주문 가능 여부 확인

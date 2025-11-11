@@ -1,9 +1,9 @@
 package com.mcargo.hubservice.application.service;
 
+import com.mcargo.hubservice.application.util.RouteUtils;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubRoute;
 import com.mcargo.hubservice.domain.repository.HubRouteRepository;
-import com.mcargo.hubservice.infrastructure.kakaomap.KakaoMapApi;
 import com.mcargo.hubservice.infrastructure.kakaomap.dto.GetDistanceAndDurationResponse;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteRequest;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteResponse;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HubRouteService {
 
-    private final KakaoMapApi kakaoMapApi;
+    private final RouteUtils routeUtils;
     private final HubRouteRepository hubRouteRepository;
     private final HubService hubService;
 
@@ -47,7 +47,7 @@ public class HubRouteService {
         //TODO 컴퍼니 정보 요청
 
         // 카카오api 요청
-        GetDistanceAndDurationResponse expectData = kakaoMapApi.getDistanceAndDuration(fromHub, toHub);
+        GetDistanceAndDurationResponse expectData = routeUtils.getDistanceAndDuration(fromHub, toHub);
 
         NavigateHubRouteResponse n1 = new NavigateHubRouteResponse(
                 1,
