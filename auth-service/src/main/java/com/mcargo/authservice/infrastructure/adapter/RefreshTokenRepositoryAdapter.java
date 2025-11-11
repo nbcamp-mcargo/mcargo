@@ -1,11 +1,13 @@
-package com.mcargo.authservice.infrastructure.repository;
+package com.mcargo.authservice.infrastructure.adapter;
 
 import com.mcargo.authservice.domain.entity.RefreshToken;
 import com.mcargo.authservice.domain.entity.User;
 import com.mcargo.authservice.domain.repository.RefreshTokenRepository;
-import java.util.Optional;
+import com.mcargo.authservice.infrastructure.repository.RefreshTokenJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
