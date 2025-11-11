@@ -1,6 +1,8 @@
 package com.mcargo.slackservice.application.service;
 
+import com.mcargo.slackservice.domain.entity.SlackMessage;
 import com.mcargo.slackservice.domain.exception.SlackException;
+import com.mcargo.slackservice.domain.repository.SlackRepository;
 import com.mcargo.slackservice.domain.response.SlackResponseCode;
 import com.slack.api.Slack;
 import com.slack.api.methods.SlackApiException;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,10 +27,18 @@ public class SlackService {
     @Value("${slack.token}")
     private String slackToken;
 
+    private final SlackRepository slackRepository;
+
     private final Slack slack = Slack.getInstance();
 
-    // 이메일 → 유저ID → DM채널 → 메시지 보내기
+    // AI 요청 -> 슬랙 메시지 송신
+    // 슬랙 프로세스 : 이메일 -> 유저ID -> DM채널 -> 메시지 송신
+    @Transactional
     public void sendMessage(String email, String message) throws IOException, SlackApiException {
+
+        // AI 요청 TODO
+
+
         // 이메일로 사용자 조회
         UsersLookupByEmailResponse userResponse = slack.methods(slackToken)
                 .usersLookupByEmail(r -> r.email(email));
@@ -37,8 +48,11 @@ public class SlackService {
             throw new SlackException(SlackResponseCode.USER_NOT_FOUND);
         }
 
+        // 유저 찾기. 찾으면 메시지 저장
         String userId = userResponse.getUser().getId();
         log.info("유저 ID: {}", userId);
+        SlackMessage slackMessage = SlackMessage.create(email, message);
+        slackRepository.save(slackMessage); // 영속성 컨텍스트에 담김
 
         // 해당 유저와 DM 채널 오픈
         ConversationsOpenResponse conversationResponse = slack.methods(slackToken)
@@ -60,6 +74,7 @@ public class SlackService {
                 );
 
         if (messageResponse.isOk()) {
+            slackMessage.success();
             log.info("메시지 전송 성공!");
         } else {
             log.info(messageResponse.getError());
