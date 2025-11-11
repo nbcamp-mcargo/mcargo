@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Builder
@@ -16,16 +15,16 @@ public class ApiResponse<T> {
 
     private final T data;
 
-    public static<T> ApiResponse<T> of(ResponseCode responseCode) {
+    public static <T> ApiResponse<T> of(ResponseCode responseCode) {
         return ApiResponse.<T>builder()
-                .responseCode(responseCode)
-                .build();
+            .responseCode(responseCode)
+            .build();
     }
 
-    public static<T> ApiResponse<T> of(ResponseCode responseCode, T data) {
+    public static <T> ApiResponse<T> of(ResponseCode responseCode, T data) {
         return ApiResponse.<T>builder()
-                .responseCode(responseCode)
-                .data(data)
-                .build();
+            .responseCode(responseCode)
+            .data(data)
+            .build();
     }
 }
