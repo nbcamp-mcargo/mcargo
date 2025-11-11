@@ -1,13 +1,13 @@
 package com.mcargo.hubservice.presentation.dto;
 
-import java.util.UUID;
-
 public record NavigateHubRouteResponse(
         int sequence,               // 순서
+        String from,                // 출발지
+        String to,                  // 도착지
         String fromAddress,         // 출발지 주소
         String toAddress,           // 도착지 주소
-        UUID deliveryDriverId,       // 배송담당자ID
+        Integer deliveryDriverNumber, // 배송담당자 번호
 
-        double predicted_distance,  // 예상 거리
-        int predicted_time          // 예상 시간(분)
+        String predicted_distance,  // 예상 거리
+        String predicted_time       // 예상 시간
 ) {}

@@ -27,3 +27,5 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_SERVICE_URL}
 
+kakao:
+  rest-api-key: ${KAKAO_API_KEY}
