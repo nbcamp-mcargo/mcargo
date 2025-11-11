@@ -59,7 +59,7 @@ public class DeliveryController {
     ){
         // TODO: 권한별 서비스 메서드 분리 (유지보수성 향상)
 
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         Page<ResDeliveryDetailDto> deliveryPage = deliveryService.getDeliveries(pageable);
         return ApiResponse.of(DeliveryResponseCode.DELIVERY_LIST_FETCHED, deliveryPage);
@@ -88,7 +88,7 @@ public class DeliveryController {
     ){
         // TODO: 권한별 서비스 메서드 분리 (유지보수성 향상)
 
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         DeliverySearchParam deliverySearchParam = new DeliverySearchParam(orderId, receiverUserId, deliveryStatus);
 
