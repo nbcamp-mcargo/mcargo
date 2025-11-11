@@ -28,7 +28,7 @@ public class HubRouteController {
         return ApiResponse.of(HubResponseCode.Hub_ROUTE_CREATED);
     }
 
-    // 허브경로 상세 조회
+    // 허브경로 검색
     //TODO 추가 해야 함
 
     // 허브 경로 안내

@@ -17,9 +17,11 @@ public interface HubRepository {
 
     Page<Hub> findAll(Pageable pageable);
 
-    Optional<Hub> findByHubProductId(UUID hubProductId);
-
-    Page<HubProduct> findProductsFromHub(UUID hubId, Pageable pageable);
-
     Collection<Hub> findAllHub();
+
+    Optional<HubProduct> findHubProductByHubProductId(UUID hubProductId);
+
+    Page<Hub> searchHubs(String name, String address, Pageable pageable);
+
+    Page<HubProduct> searchHubProducts(UUID hubId, Pageable pageable);
 }

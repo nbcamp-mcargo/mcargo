@@ -37,21 +37,28 @@ public class HubJpaRepositoryAdapter implements HubRepository {
         return hubJpaRepository.findAll(pageable);
     }
 
-    // 허브상품id로 허브 조회
-    @Override
-    public Optional<Hub> findByHubProductId(UUID hubProductId) {
-        return hubJpaRepository.findByHubProductId(hubProductId);
-    }
-
-    // 해당 허브의 모든 허브상품 조회
-    @Override
-    public Page<HubProduct> findProductsFromHub(UUID hubId, Pageable pageable) {
-        return hubJpaRepository.findProductsFromHub(hubId, pageable);
-    }
-
+    // 모든 허브 반환
     @Override
     public Collection<Hub> findAllHub() {
         return hubJpaRepository.findAll();
+    }
+
+    // HubProductId로 허브상품
+    @Override
+    public Optional<HubProduct> findHubProductByHubProductId(UUID hubProductId) {
+        return hubJpaRepository.findHubProductByHubProductId(hubProductId);
+    }
+
+    // 이름 혹은 주소로 허브 검색
+    @Override
+    public Page<Hub> searchHubs(String name, String address, Pageable pageable) {
+        return hubJpaRepository.searchHubs(name, address, pageable);
+    }
+
+    // 소속허브로 허브상품 검색
+    @Override
+    public Page<HubProduct> searchHubProducts(UUID hubId, Pageable pageable) {
+        return hubJpaRepository.searchHubProducts(hubId, pageable);
     }
 
 }

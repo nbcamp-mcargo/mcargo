@@ -63,29 +63,10 @@ public class Hub extends BaseEntity {
         if (driverNumber != null) this.lastDriverNumber = driverNumber;
     }
 
-    //ㅡㅡ허브상품 관련ㅡㅡ
     // 허브상품 추가
     public void addHubProduct(UUID productId, Integer stock) {
         HubProduct hubProduct = HubProduct.create(productId, stock);
         hubProducts.add(hubProduct);
-    }
-
-    //허브상품 수정
-    public void updateHubProduct(UUID productId, HubProductStatus status, Integer stock) {
-        hubProducts.stream()
-                .filter(p -> p.getProductId().equals(productId))
-                .findFirst().orElseThrow(
-                        () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND))
-                .update(status, stock);
-    }
-
-    //허브상품 삭제
-    public void deleteHubProduct(Long userId, UUID productId) {
-        hubProducts.stream()
-                .filter(p -> p.getProductId().equals(productId))
-                .findFirst().orElseThrow(
-                        () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND))
-                .delete(userId);
     }
 
 }

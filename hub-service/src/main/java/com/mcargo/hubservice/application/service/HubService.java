@@ -1,11 +1,14 @@
 package com.mcargo.hubservice.application.service;
 
+import com.mcargo.hubservice.domain.entity.HubProductStatus;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubProduct;
 import com.mcargo.hubservice.domain.repository.HubRepository;
+import com.mcargo.hubservice.infrastructure.client.CompanyClient;
+import com.mcargo.hubservice.infrastructure.client.UserClient;
 import com.mcargo.hubservice.presentation.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +27,10 @@ import java.util.stream.Collectors;
 public class HubService {
 
     private final HubRepository hubRepository;
+    private final CompanyClient companyClient;
+    private final UserClient userClient;
 
+    //ㅡㅡ 허브 관련 ㅡㅡ
     // 허브 생성
     @Transactional
     public void createHub(CreateHubRequest dto) {
@@ -64,6 +70,7 @@ public class HubService {
         findHub.delete(userId); // soft delete
     }
 
+    // TODO 레디스 캐싱
     // 전체 허브 조회
     @Transactional(readOnly = true)
     public Page<GetHubResponse> getHubAll(int size, String sortBy, boolean isDescending) {
@@ -81,6 +88,7 @@ public class HubService {
         );
     }
 
+    // TODO 레디스 캐싱
     // 허브 단일 조회
     @Transactional(readOnly = true)
     public GetHubResponse getHub(UUID hubId) {
@@ -96,37 +104,26 @@ public class HubService {
         );
     }
 
-    // 미완
-    // 허브 검색
+    // 허브 검색. 이름, 주소로
     @Transactional(readOnly = true)
     public Page<GetHubResponse> searchHub(String name, String address, int size, String sortBy, Boolean isDescending) {
         Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
+        Page<Hub> findHubs = hubRepository.searchHubs(name, address, pageable);
 
-        return null;
-    }
-
-    // 특정 허브의 모든 허브상품 조회
-    @Transactional(readOnly = true)
-    public Page<GetHubProductResponse> getProductsFromHub(UUID hubId, int size, String sortBy, Boolean isDescending) {
-        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
-
-        Page<HubProduct> findHubProducts = hubRepository.findProductsFromHub(hubId, pageable);
-        return findHubProducts.map(hp -> new GetHubProductResponse(
-                hubId, // TODO HubProduct에 필드 생성만 해놓으면 단방향으로 생성된 HubId가 제대로 들어갈까?
-                hp.getProductId(),
-                hp.getStatus(),
-                hp.getStock()
+        return findHubs.map(h -> new GetHubResponse(
+                h.getName(),
+                h.getAddress(),
+                h.getLatitude(),
+                h.getLongitude(),
+                h.getLastDriverNumber()
         ));
-
     }
 
     // ㅡㅡ허브 상품 관련ㅡㅡ
     // 허브상품 추가
     @Transactional
     public void addHubProduct(@Valid addHubProductRequest request) {
-        //TODO 요청의 업체상품의 아이디가 유효 한지 확인 클라이언트 요청 추가 예정
-
         Hub findHub = hubRepository.findById(request.hubId()).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
 
@@ -136,47 +133,75 @@ public class HubService {
         );
     }
 
-    // 허브상품 수정 (상태, 재고)
+    // 허브상품 수정(상태, 재고)
     @Transactional
     public void updateHubProduct(UUID hubProductId, UpdateHubProductRequest request) {
-        // 허브상품id로 허브 검색
-        Hub findHub = hubRepository.findByHubProductId(hubProductId).orElseThrow(
-                () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
+        HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(hubProductId).orElseThrow(
+                () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
 
-        findHub.updateHubProduct(hubProductId, request.hubProductStatus(), request.stock());
+        findHubProduct.update(request.hubProductStatus(), request.stock());
     }
 
     // 허브상품 삭제
     @Transactional
     public void deleteHubProduct(Long userId, UUID hubProductId) {
-        // 허브상품id로 허브 검색
-        Hub findHub = hubRepository.findByHubProductId(hubProductId).orElseThrow(
-                () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
-
-        findHub.deleteHubProduct(userId, hubProductId);
+        HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(hubProductId).orElseThrow(
+                () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
+        findHubProduct.delete(userId);
     }
+
 
     // 허브상품 상세조회
     @Transactional(readOnly = true)
     public GetHubProductDetailsResponse getHubProductDetails(UUID hubProductId) {
+        HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(hubProductId).orElseThrow(
+                () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
 
-        //TODO 상품 상세정보 http요청하고 받아서 dto 변환 후 반환
-        //어떤 데이터 반환하는지 확인 후 작성
-        return new GetHubProductDetailsResponse();
+        //TODO 상품 상세정보 api 구현되면 적용
+        //companyClient
+
+        return null;
 
     }
 
-    // 허브상품 검색 TODO 구현방법 찾아보고 구현
-    // @Transactional(readOnly = true)
-    // public
+    // 허브상품 검색. 소속 허브로. 상품의 대한 정보는 없음(id값만)
+    @Transactional(readOnly = true)
+    public Page<GetHubProductResponse> searchHubProducts(UUID hubId, int size, String sortBy, Boolean isDescending) {
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
+
+        Page<HubProduct> findHubProducts = hubRepository.searchHubProducts(hubId, pageable);
+        return findHubProducts.map(hp -> new GetHubProductResponse(
+                hubId,
+                hp.getProductId(),
+                hp.getStatus(),
+                hp.getStock()
+        ));
+
+    }
 
     // 허브상품 주문 가능 여부 확인
     @Transactional(readOnly = true)
-    public void getHubProductOrderable(GetHubProductOrderableRequest request) {
-        //TODO 주문 가능 여부 요청에 어떤 응답을 기대하는지 확인하고 작성
+    public List<GetHubProductOrderableResponse> getHubProductOrderable(List<GetHubProductOrderableRequest> request) {
+        return request.stream().map(
+                orderedItem -> {
+                    HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(orderedItem.hubProductId()).orElseThrow(
+                            () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
+
+                    return checkOrderable(findHubProduct, orderedItem.quantity());
+                }).toList();
     }
 
-    // 미완
+
+
+
+
+
+
+
+
+
+
+    // ㅡㅡ protected, private ㅡㅡ
     // 업체 배송 담당자 배정. 허브 경로에서 사용
     @Transactional
     protected Integer assignDriver(UUID hubId) {
@@ -203,17 +228,36 @@ public class HubService {
                         .orElseThrow(() -> new HubException(HubResponseCode.HUB_DRIVER_NOT_FOUND)));
     }
 
-    // 모든 허브id 반환
+    // 주문 가능 여부 판단
+    private GetHubProductOrderableResponse checkOrderable(HubProduct hubProduct, int requestedQuantity) {
+        String message;
+        boolean orderable;
+
+        if (!hubProduct.getStatus().name().equals(HubProductStatus.SALE.name())) {
+            message = "판매 중인 상품이 아닙니다.";
+            orderable = false;
+        } else if (hubProduct.getStock() < requestedQuantity) {
+            message = "상품의 재고를 초과하는 요청입니다.";
+            orderable = false;
+        } else {
+            message = "주문 가능";
+            orderable = true;
+        }
+
+        return new GetHubProductOrderableResponse(hubProduct.getId(), orderable, message);
+    }
+
+    // 허브 반환. 허브 경로에서 사용
+    protected Hub getHub2(UUID hubId) {
+        return hubRepository.findById(hubId).orElseThrow(
+                () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
+
+    }
+
+    // 모든 허브id 반환. 허브 경로에서 사용
     protected List<UUID> getAllHubId() {
         return hubRepository.findAllHub().stream()
                 .map(Hub::getId)
                 .collect(Collectors.toList());
-    }
-
-    // 허브 주소 반환
-    protected String getHubAddress(UUID hubId) {
-        Hub findHub = hubRepository.findById(hubId).orElseThrow(
-                () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
-        return findHub.getAddress();
     }
 }
