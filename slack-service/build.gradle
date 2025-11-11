@@ -1,6 +1,5 @@
 dependencies {
     implementation 'com.slack.api:slack-api-client:1.7.0' // slack api
-    implementation 'org.springframework.boot:spring-boot-starter-webflux' // webclient
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // 유레카 클라이언트
     implementation 'org.springframework.boot:spring-boot-starter-web' // 스프링 웹
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // feign
