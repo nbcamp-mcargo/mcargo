@@ -1,8 +1,6 @@
 package com.mcargo.deliveryservice.domain.model;
 
 import com.mcargo.common.entity.BaseEntity;
-import com.mcargo.common.exception.DeliveryException;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 

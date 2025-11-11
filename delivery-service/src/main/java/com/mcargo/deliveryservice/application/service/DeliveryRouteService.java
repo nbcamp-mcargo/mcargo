@@ -1,12 +1,12 @@
 package com.mcargo.deliveryservice.application.service;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.deliveryservice.application.dto.DeliveryRouteSearchParam;
 import com.mcargo.deliveryservice.application.dto.HubRouteInfo;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import com.mcargo.deliveryservice.domain.model.DeliveryRoute;
 import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
 import com.mcargo.deliveryservice.domain.repository.DeliveryRouteReposotory;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryRouteStatusDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteStatusDto;
@@ -101,7 +101,7 @@ public class DeliveryRouteService {
         DeliveryRoute deliveryRoute = findById(deliveryRouteId);
 
         if(deliveryRoute.getDeliveryRouteStatus().equals(DeliveryRouteStatusEnum.CANCELED)){
-            new DeliveryException(DeliveryErrorCode.DELIVERY_ALREADY_CANCELED);
+            new DeliveryException(DeliveryResponseCode.DELIVERY_ALREADY_CANCELED);
         }
 
         deliveryRoute.updateStatus(deliveryRouteStatus);
@@ -148,6 +148,6 @@ public class DeliveryRouteService {
 
     public DeliveryRoute findById(UUID deliveryRouteId) {
         return deliveryRouteReposotory.findById(deliveryRouteId)
-                .orElseThrow(() -> new DeliveryException(DeliveryErrorCode.DELEVERY_ROUTE_NOT_FOUND));
+                .orElseThrow(() -> new DeliveryException(DeliveryResponseCode.DELEVERY_ROUTE_NOT_FOUND));
     }
 }

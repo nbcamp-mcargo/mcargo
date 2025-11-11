@@ -1,20 +1,15 @@
 package com.mcargo.deliveryservice.presentation.controller;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.DeliveryResponseCode;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.deliveryservice.application.dto.DeliveryRouteSearchParam;
-import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
 import com.mcargo.deliveryservice.application.service.DeliveryRouteService;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
-import com.mcargo.deliveryservice.domain.model.DeliveryStatusEnum;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryRouteStatusDto;
-import com.mcargo.deliveryservice.presentation.response.ResDeliveryDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteStatusDto;
-import com.mcargo.deliveryservice.presentation.response.ResDeliveryStatusDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +30,7 @@ public class DeliveryRouteController {
                                                                        @RequestBody ReqDeliveryRouteStatusDto reqDeliveryRouteStatusDto) {
 
         if(deliveryRouteStatus.equals(DeliveryRouteStatusEnum.COMPLETE) && reqDeliveryRouteStatusDto == null){
-            new DeliveryException(DeliveryErrorCode.DELIVERY_REQUIRED_FIELD_MISSING);
+            new DeliveryException(DeliveryResponseCode.DELIVERY_REQUIRED_FIELD_MISSING);
         }
 
         ResDeliveryRouteStatusDto resDeliveryRouteStatusDto = deliveryRouteService.updateDeliveryStatus(deliveryRouteId, deliveryRouteStatus, reqDeliveryRouteStatusDto);

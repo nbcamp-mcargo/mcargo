@@ -1,7 +1,7 @@
 package com.mcargo.deliveryservice.presentation.controller;
 
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.DeliveryResponseCode;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
 import com.mcargo.deliveryservice.application.service.DeliveryService;
