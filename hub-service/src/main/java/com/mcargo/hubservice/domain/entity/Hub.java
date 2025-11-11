@@ -1,8 +1,6 @@
 package com.mcargo.hubservice.domain.entity;
 
 import com.mcargo.common.entity.BaseEntity;
-import com.mcargo.hubservice.domain.exception.HubException;
-import com.mcargo.hubservice.domain.response.HubResponseCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
