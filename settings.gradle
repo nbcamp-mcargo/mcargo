@@ -6,4 +6,5 @@ include 'order-service',
         'hub-service',
         'eureka-server',
         'common',
-        'auth-service'
+        'auth-service',
+        'company-service'
