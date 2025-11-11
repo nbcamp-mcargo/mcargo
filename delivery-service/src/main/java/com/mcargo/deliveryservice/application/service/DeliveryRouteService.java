@@ -28,7 +28,7 @@ public class DeliveryRouteService {
 
     private final DeliveryRouteReposotory deliveryRouteReposotory;
 
-    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, String address){
+    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, UUID receiverCompId){
         // TODO: 허브 API로 경로 정보 조회
 //            List<HubRouteInfo> hubRoutes = hubClient.getRoutes(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId());
         List<HubRouteInfo> hubRoutes = getMockHubRoutes(
