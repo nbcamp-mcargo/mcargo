@@ -49,7 +49,7 @@ public class DeliveryRouteController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,          // "createdAt" / "updatedAt"
             @RequestParam(defaultValue = "true") boolean isDescending){
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         Page<ResDeliveryRouteDetailDto> deliveryRoutePage = deliveryRouteService.getDeliveryRoutes(pageable);
         return ApiResponse.of(DeliveryResponseCode.DELIVERY_LIST_FETCHED, deliveryRoutePage);
@@ -68,7 +68,7 @@ public class DeliveryRouteController {
             @RequestParam(required = false) String sortBy,          // "createdAt" / "updatedAt"
             @RequestParam(defaultValue = "true") boolean isDescending
     ){
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
         DeliveryRouteSearchParam deliveryRouteSearchParam = new DeliveryRouteSearchParam(deliveryRouteId, deliveryId, fromHubId, toHubId, deliveryRouteStatus);
 
         Page<ResDeliveryRouteDetailDto> deliverySearchPage = deliveryRouteService.searchDeliveryRoutes(deliveryRouteSearchParam, pageable);
