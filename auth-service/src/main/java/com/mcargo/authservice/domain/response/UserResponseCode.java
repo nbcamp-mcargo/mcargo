@@ -1,5 +1,6 @@
-package com.mcargo.common.response;
+package com.mcargo.authservice.domain.response;
 
+import com.mcargo.common.response.ResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
