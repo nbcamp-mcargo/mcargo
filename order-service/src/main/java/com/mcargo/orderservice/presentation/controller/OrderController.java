@@ -21,13 +21,14 @@ public class OrderController {
 
     private OrderService orderService;
 
-    // 주문은 업체 담당자만 가능
+    // 주문 생성은 업체 담당자만 가능
     @PostMapping
     public ApiResponse<Void> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         orderService.createOrder(request);
         return ApiResponse.of(OrderResponseCode.ORDER_CREATED);
     }
 
+    // 주문 목록 조회
     @GetMapping
     public ApiResponse<Page<getOrderResponse>> getOrderAll(@RequestParam(defaultValue = "0") int page,
                                                            @RequestParam(defaultValue = "10") int size,
@@ -36,19 +37,21 @@ public class OrderController {
         return ApiResponse.of(OrderResponseCode.ORDER_FOUND, orderService.getOrderAll(page, size, sortBy, isDescending));
     }
 
+    // 주문 상세 조회
     @GetMapping("/{orderId}")
-    public ApiResponse<Void> readOrder(@PathVariable UUID orderId) {
+    public ApiResponse<getOrderResponse> readOrder(@PathVariable UUID orderId) {
         orderService.readOrder(orderId);
         return ApiResponse.of(OrderResponseCode.ORDER_FOUND);
     }
 
+    // 주문 수정
     @PatchMapping("/{orderId}")
     public ApiResponse<Void> updateOrder(@PathVariable UUID orderId, @RequestBody UpdateOrderRequest request) {
         orderService.updateOrder(orderId, request);
         return ApiResponse.of(OrderResponseCode.ORDER_UPDATED);
     }
 
-    //주문 취소는 수령 업체 담당자만 가능
+    //주문 삭제는 수령 업체 담당자만 가능
     @DeleteMapping("/{orderId}")
     public ApiResponse<Void> deleteOrder(@PathVariable UUID orderId) {
         Long userId = 1L;

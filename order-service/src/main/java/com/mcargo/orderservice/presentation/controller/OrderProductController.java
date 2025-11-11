@@ -20,6 +20,7 @@ public class OrderProductController {
 
     private final OrderProductService orderProductService;
 
+    // 주문 상품 생성
     @PostMapping
     public ApiResponse<Void> createOrderProduct(
             @PathVariable UUID orderId,
@@ -29,6 +30,7 @@ public class OrderProductController {
         return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_CREATED);
     }
 
+    // 주문 상품 목록 조회
     @GetMapping
     public ApiResponse<List<OrderProductResponse>> getOrderProducts(
             @PathVariable UUID orderId
@@ -37,6 +39,7 @@ public class OrderProductController {
         return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_FOUND);
     }
 
+    // 주문 상품 상세 조회
     @GetMapping("/{orderProductId}")
     public ApiResponse<OrderProductResponse> getOrderProduct(
             @PathVariable UUID orderId,
@@ -46,6 +49,7 @@ public class OrderProductController {
         return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_FOUND);
     }
 
+    // 주문 상품 수정
     @PutMapping("/{orderProductId}")
     public ApiResponse<Void> updateOrderProduct(
             @PathVariable UUID orderId,
@@ -56,6 +60,7 @@ public class OrderProductController {
         return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_UPDATED);
     }
 
+    // 주문 상품 삭제
     @DeleteMapping("/{orderProductId}")
     public ApiResponse<Void> deleteOrderProduct(
             @PathVariable UUID orderId,
