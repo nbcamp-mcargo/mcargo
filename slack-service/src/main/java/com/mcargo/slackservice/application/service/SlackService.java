@@ -1,5 +1,6 @@
 package com.mcargo.slackservice.application.service;
 
+import com.mcargo.slackservice.application.service.util.PredictAiUtils;
 import com.mcargo.slackservice.domain.entity.SlackMessage;
 import com.mcargo.slackservice.domain.exception.SlackException;
 import com.mcargo.slackservice.domain.repository.SlackRepository;
@@ -28,16 +29,17 @@ public class SlackService {
     private String slackToken;
 
     private final SlackRepository slackRepository;
+    private final PredictAiUtils predictAiUtils;
 
     private final Slack slack = Slack.getInstance();
 
     // AI 요청 -> 슬랙 메시지 송신
     // 슬랙 프로세스 : 이메일 -> 유저ID -> DM채널 -> 메시지 송신
     @Transactional
-    public void sendMessage(String email, String message) throws IOException, SlackApiException {
+    public void sendMessage(String email, String aiRequestMessage) throws IOException, SlackApiException {
 
         // AI 요청 TODO
-
+        String aiResponseMessage = predictAiUtils.predictAi(email);
 
         // 이메일로 사용자 조회
         UsersLookupByEmailResponse userResponse = slack.methods(slackToken)
@@ -51,7 +53,7 @@ public class SlackService {
         // 유저 찾기. 찾으면 메시지 저장
         String userId = userResponse.getUser().getId();
         log.info("유저 ID: {}", userId);
-        SlackMessage slackMessage = SlackMessage.create(email, message);
+        SlackMessage slackMessage = SlackMessage.create(email, aiRequestMessage, aiResponseMessage);
         slackRepository.save(slackMessage); // 영속성 컨텍스트에 담김
 
         // 해당 유저와 DM 채널 오픈
@@ -70,7 +72,7 @@ public class SlackService {
         ChatPostMessageResponse messageResponse = slack.methods(slackToken)
                 .chatPostMessage(r -> r
                         .channel(channelId)
-                        .text(message)
+                        .text(aiResponseMessage)
                 );
 
         if (messageResponse.isOk()) {

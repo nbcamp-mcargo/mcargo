@@ -22,7 +22,7 @@ public class SlackController {
     public ApiResponse<Void> sendMessage(
             @RequestBody AiMessageRequest request) throws SlackApiException, IOException {
 
-        slackService.sendMessage(request.userEmail(), request.message());
+        slackService.sendMessage(request.userEmail(), request.aiRequestMessage());
         return ApiResponse.of(SlackResponseCode.SLACK_OK);
     }
 

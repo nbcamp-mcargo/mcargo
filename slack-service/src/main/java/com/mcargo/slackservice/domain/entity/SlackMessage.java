@@ -25,16 +25,21 @@ public class SlackMessage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MessageState messageState; // 송신 성공, 실패 여부
 
-    private String message;
+    private  String aiRequestMessage; // ai에 요청할 메시지
 
-    public static SlackMessage create(String recipient, String message) {
+    private String aiResponseMessage; // ai응답을 저장할 메시지
+
+    // 메시지 엔티티 생성
+    public static SlackMessage create(String recipient, String aiRequestMessage, String aiResponseMessage) {
         SlackMessage slackMessage = new SlackMessage();
         slackMessage.recipient = recipient;
-        slackMessage.message = message;
+        slackMessage.aiRequestMessage = aiRequestMessage;
+        slackMessage.aiResponseMessage = aiResponseMessage;
         slackMessage.messageState = MessageState.FAILED;
         return slackMessage;
     }
 
+    // 송신 성공 시 상태 변경
     public void success() {
         this.messageState = MessageState.SUCCESS;
     }
