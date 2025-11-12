@@ -31,8 +31,6 @@ public class Product extends BaseEntity {
 
     private String hubId;
 
-    private Integer quantity;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

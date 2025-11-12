@@ -3,7 +3,6 @@ package com.mcargo.companyservice.presentation.controller;
 import com.mcargo.common.response.ApiResponse;
 import com.mcargo.companyservice.application.response.ProductResponseCode;
 import com.mcargo.companyservice.application.service.ProductService;
-import com.mcargo.companyservice.domain.entity.Product;
 import com.mcargo.companyservice.presentation.dto.request.ProductCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.ProductCreateResponse;
