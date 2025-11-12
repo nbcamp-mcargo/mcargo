@@ -9,6 +9,4 @@ public interface ProductRepository {
     Product save(Product product);
 
     Optional<Product> findById(String id);
-
-    void delete(Product product);
 }
