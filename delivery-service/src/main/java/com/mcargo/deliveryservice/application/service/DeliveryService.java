@@ -1,12 +1,12 @@
 package com.mcargo.deliveryservice.application.service;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import com.mcargo.deliveryservice.domain.model.Delivery;
 import com.mcargo.deliveryservice.domain.model.DeliveryRoute;
 import com.mcargo.deliveryservice.domain.model.DeliveryStatusEnum;
 import com.mcargo.deliveryservice.domain.repository.DeliveryRepository;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryDto;
@@ -44,7 +44,7 @@ public class DeliveryService {
                 reqDeliveryDto.toHubId());
 
         if(deliveryRepository.existsByOrderIdAndDeletedAtIsNull(reqDeliveryDto.orderId())) {
-            throw new DeliveryException(DeliveryErrorCode.DELIVERY_ALREADY_EXISTS);
+            throw new DeliveryException(DeliveryResponseCode.DELIVERY_ALREADY_EXISTS);
         }
 
         // 배송 정보 생성
@@ -53,7 +53,7 @@ public class DeliveryService {
                 reqDeliveryDto.receiverUserId(),
                 reqDeliveryDto.receiverSlackId());
 
-        List<DeliveryRoute> routes = deliveryRouteService.createDeliveryRoute(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId(), reqDeliveryDto.address());
+        List<DeliveryRoute> routes = deliveryRouteService.createDeliveryRoute(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId(), reqDeliveryDto.receiverCompId());
 
         // cascade로 DeliveryRoute도 함께 저장될 수 있도록
         for(DeliveryRoute route : routes){
@@ -102,7 +102,7 @@ public class DeliveryService {
         Delivery delivery = findById(deliveryId);
 
         if(delivery.getDeliveryStatus().equals(DeliveryStatusEnum.CANCELED)){
-            new DeliveryException(DeliveryErrorCode.DELIVERY_ALREADY_CANCELED);
+            new DeliveryException(DeliveryResponseCode.DELIVERY_ALREADY_CANCELED);
         }
 
         delivery.cencelDeliveryWithRoutes();
@@ -111,7 +111,7 @@ public class DeliveryService {
     @Transactional
     public void deleteDelivery(UUID deliveryId) {
         Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
+                .orElseThrow(() -> new DeliveryException(DeliveryResponseCode.DELIVERY_NOT_FOUND));
 
         delivery.softDeleteWithRoutes();
     }
@@ -161,6 +161,6 @@ public class DeliveryService {
 
     public Delivery findById(UUID deliveryId) {
         return deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new DeliveryException(DeliveryErrorCode.DELIVERY_NOT_FOUND));
+                .orElseThrow(() -> new DeliveryException(DeliveryResponseCode.DELIVERY_NOT_FOUND));
     }
 }
