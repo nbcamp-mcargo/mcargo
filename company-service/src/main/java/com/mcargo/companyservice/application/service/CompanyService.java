@@ -54,5 +54,7 @@ public class CompanyService {
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
         company.updateEntity(request);
+
+        company.recordUpdate(userId);
     }
 }
