@@ -8,6 +8,9 @@ spring:
     url: ${COMPANY_SERVICE_URL}
     username: ${COMPANY_SERVICE_USERNAME}
     password: ${COMPANY_SERVICE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 server:
   port: 19099
