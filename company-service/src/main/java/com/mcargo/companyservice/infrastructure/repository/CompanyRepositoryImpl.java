@@ -32,4 +32,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public boolean existsById(String companyId) {
         return companyJpaRepository.existsById(companyId);
     }
+
+    @Override
+    public boolean existsByName(String companyName) {
+        return companyJpaRepository.existsByName(companyName);
+    }
 }

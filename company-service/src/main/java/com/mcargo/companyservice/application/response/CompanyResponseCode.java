@@ -13,7 +13,9 @@ public enum CompanyResponseCode implements ResponseCode {
     COMPANY_READ_SUCCESS(HttpStatus.OK, "업체 조회에 성공했습니다."),
     COMPANY_CREATE_SUCCESS(HttpStatus.CREATED, "업체 생성에 성공했습니다."),
     COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "업체 수정에 성공했습니다."),
-    COMPANY_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "업체 삭제에 성공했습니다.");
+    COMPANY_DELETE_SUCCESS(HttpStatus.NO_CONTENT, "업체 삭제에 성공했습니다."),
+
+    COMPANY_NAME_DUPLICATED(HttpStatus.BAD_REQUEST, "중복된 업체명으로 등록에 실패했습니다.");
 
     private final HttpStatus status;
 

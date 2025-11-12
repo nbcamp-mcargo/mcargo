@@ -1,6 +1,8 @@
 package com.mcargo.companyservice.domain.entity;
 
+import com.mcargo.common.entity.BaseEntity;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.CompanyCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_company")
-public class Company {
+public class Company extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -56,13 +58,24 @@ public class Company {
         }
     }
 
-    public CompanyReadResponse toCompanyReadResponse() {
+    public CompanyReadResponse toReadResponse() {
         return new CompanyReadResponse(
                 this.name,
-                this.type,
+                this.type.toString(),
                 this.address,
                 this.latitude,
                 this.longitude
         );
     }
+
+    public CompanyCreateResponse toCreateResponse() {
+        return new CompanyCreateResponse(
+                this.name,
+                this.type.toString(),
+                this.address,
+                this.latitude,
+                this.longitude
+        );
+    }
+
 }

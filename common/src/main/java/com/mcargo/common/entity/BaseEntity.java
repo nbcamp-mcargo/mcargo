@@ -43,4 +43,9 @@ public class BaseEntity {
         this.deletedBy = null;
         this.deletedAt = null;
     }
+
+    public void recordUpdate(Long userId) {
+        this.updatedBy = userId;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

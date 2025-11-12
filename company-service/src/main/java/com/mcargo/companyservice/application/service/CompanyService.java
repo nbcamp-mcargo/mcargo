@@ -5,9 +5,11 @@ import com.mcargo.companyservice.domain.entity.Company;
 import com.mcargo.companyservice.domain.repository.CompanyRepository;
 import com.mcargo.companyservice.presentation.dto.request.CompanyCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.mcargo.companyservice.application.response.CompanyResponseCode.COMPANY_NAME_DUPLICATED;
 import static com.mcargo.companyservice.application.response.CompanyResponseCode.COMPANY_NOT_FOUND;
 
 @Service
@@ -16,30 +18,33 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public Company getCompany(String companyId) {
+    public Company createCompany(CompanyCreateRequest request) {
 
-        // 예외 로직 추가 필요
+        if (companyRepository.existsByName(request.name())) {
+            throw new CompanyException(COMPANY_NAME_DUPLICATED);
+        }
 
-        return companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
+        return companyRepository.save(request.toEntity());
     }
 
-    public void createCompany(CompanyCreateRequest request) {
-
-        // 예외 로직 추가 필요
-
-        companyRepository.save(request.toEntity());
-    }
-
-    public void deleteCompany(String companyId) {
+    public CompanyReadResponse getCompany(String companyId) {
 
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
-        companyRepository.deleteById(companyId);
+        return company.toReadResponse();
     }
 
-    public void updateCompany(String companyId, CompanyUpdateRequest request) {
+    public void deleteCompany(String companyId, Long userId) {
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
+
+        company.delete(userId);
+    }
+
+    public void updateCompany(String companyId, Long userId, CompanyUpdateRequest request) {
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
