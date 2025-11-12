@@ -38,6 +38,11 @@ public class DeliveryRouteService {
 
         List<DeliveryRoute> routes = new ArrayList<>();
         for(HubRouteInfo hubRouteInfo : hubRoutes){
+            UUID deliveryDriveId = hubRouteInfo.deliveryDriverId();
+            if(deliveryDriveId == null) {
+                deliveryDriveId = addDeliveryDriver();
+            }
+
             DeliveryRoute route = DeliveryRoute.createDeliveryRoute(
                     hubRouteInfo.sequence(),
                     hubRouteInfo.startHubId(),
@@ -51,6 +56,12 @@ public class DeliveryRouteService {
         }
 
         return routes;
+    }
+
+    private UUID addDeliveryDriver() {
+        // TODO : 배송 기사 추가
+
+        return null;
     }
 
 

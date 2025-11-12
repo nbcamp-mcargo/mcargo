@@ -8,3 +8,4 @@ include 'order-service',
         'common',
         'auth-service',
         'company-service'
+        'slack-service'
