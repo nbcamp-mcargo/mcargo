@@ -8,5 +8,6 @@ public record ReqDeliveryDto(
         UUID toHubId,
         String address,
         Long receiverUserId,
-        String receiverSlackId
+        String receiverSlackId,
+        UUID receiverCompId
 ) {}

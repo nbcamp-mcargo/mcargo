@@ -1,7 +1,7 @@
 package com.mcargo.deliveryservice.presentation.controller;
 
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.DeliveryResponseCode;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
 import com.mcargo.deliveryservice.application.service.DeliveryService;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/deliverys")
+@RequestMapping("/deliveries")
 public class DeliveryController {
     private final DeliveryService deliveryService;
 
@@ -59,7 +59,7 @@ public class DeliveryController {
     ){
         // TODO: 권한별 서비스 메서드 분리 (유지보수성 향상)
 
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         Page<ResDeliveryDetailDto> deliveryPage = deliveryService.getDeliveries(pageable);
         return ApiResponse.of(DeliveryResponseCode.DELIVERY_LIST_FETCHED, deliveryPage);
@@ -88,7 +88,7 @@ public class DeliveryController {
     ){
         // TODO: 권한별 서비스 메서드 분리 (유지보수성 향상)
 
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         DeliverySearchParam deliverySearchParam = new DeliverySearchParam(orderId, receiverUserId, deliveryStatus);
 
