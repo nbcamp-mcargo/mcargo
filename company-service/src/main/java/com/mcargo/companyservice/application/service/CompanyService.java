@@ -18,15 +18,13 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public void createCompany(CompanyCreateRequest request) {
-
-        // 예외 로직 추가 필요
+    public Company createCompany(CompanyCreateRequest request) {
 
         if (companyRepository.existsByName(request.name())) {
             throw new CompanyException(COMPANY_NAME_DUPLICATED);
         }
 
-        companyRepository.save(request.toEntity());
+        return companyRepository.save(request.toEntity());
     }
 
     public Company getCompany(String companyId) {
@@ -37,7 +35,7 @@ public class CompanyService {
 
     public void deleteCompany(String companyId) {
 
-        Company company = companyRepository.findById(companyId)
+        companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
         companyRepository.deleteById(companyId);

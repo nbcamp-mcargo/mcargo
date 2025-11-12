@@ -6,6 +6,7 @@ import com.mcargo.companyservice.application.service.CompanyService;
 import com.mcargo.companyservice.domain.entity.Company;
 import com.mcargo.companyservice.presentation.dto.request.CompanyCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.CompanyCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,12 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @PostMapping("/company")
-    public ApiResponse<Void> createCompany(
+    public ApiResponse<CompanyCreateResponse> createCompany(
             @RequestBody CompanyCreateRequest request) {
 
-        companyService.createCompany(request);
+        Company createdCompany = companyService.createCompany(request);
 
-        return ApiResponse.of(COMPANY_CREATE_SUCCESS);
+        return ApiResponse.of(COMPANY_CREATE_SUCCESS, createdCompany.toCreateResponse());
     }
 
     @GetMapping("/company/{companyId}")
@@ -33,7 +34,7 @@ public class CompanyController {
 
         Company company = companyService.getCompany(companyId);
 
-        return ApiResponse.of(COMPANY_READ_SUCCESS, company.toCompanyReadResponse());
+        return ApiResponse.of(COMPANY_READ_SUCCESS, company.toReadResponse());
     }
 
     @PatchMapping("/company/{companyId}")
