@@ -1,0 +1,24 @@
+### 업체 생성 /company
+##
+POST http://localhost:19099:company
+Content-Type: application/json
+
+{
+  "name": "CJ Logistics Center",
+  "type": "SUPPLIER_COMPANY",
+  "address": "서울특별시 강남구 테헤란로 152",
+  "latitude": 37.498095,
+  "longitude": 127.027610
+}
+
+### 업체 수정 /comapny/{companyId}
+## UUID로 생성된 companyId를 채운 후 요청
+PATCH http://localhost:19099:company/
+
+### 업체 삭제 /comany/{companyId}
+## UUID로 생성된 companyId를 채운 후 요청
+DELETE http://localhost:19099:company/
+
+### 업체 조회 /company
+## UUID로 생성된 companyId를 채운 후 요청
+GET http://localhost:19099:company
