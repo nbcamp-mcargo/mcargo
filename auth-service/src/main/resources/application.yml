@@ -1,6 +1,9 @@
 spring:
   application:
     name: auth-service
+  config:
+    import:
+      - optional:file:.env[.properties]
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -27,6 +30,6 @@ eureka:
 
 service:
   jwt:
-    access-expiration: 3600000 # 액세스 토큰 만료시간 (60분 = 3,600,000ms)
+    access-expiration: 36000000 # 액세스 토큰 만료시간 (10시간 = 36,000,000ms)
     refresh-expiration: 604800000 # 리프레시 토큰 만료시간 (7일 = 604,800,000ms)
-    secret-key: ${JWT_SECRET:7ouTf7qUVe9KZfJh4QYOGe56us3HgAvamCkyntP0MkY=}
+    secret-key: ${JWT_KEY}

@@ -1,5 +1,6 @@
-package com.mcargo.common.exception;
+package com.mcargo.authservice.domain.exception;
 
+import com.mcargo.common.exception.DomainException;
 import com.mcargo.common.response.ResponseCode;
 
 public class UserException extends DomainException {
@@ -15,5 +16,5 @@ public class UserException extends DomainException {
         super(responseCode);
         this.detailMessage = detailMessage;
     }
-    
+
 }
