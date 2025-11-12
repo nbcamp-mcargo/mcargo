@@ -2,11 +2,13 @@ package com.mcargo.companyservice.presentation.dto.request;
 
 import com.mcargo.companyservice.domain.entity.Company;
 import com.mcargo.companyservice.domain.entity.Product;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ProductCreateRequest(
-        String companyId,
-        String name,
-        Integer price,
+        @NotBlank String companyId,
+        @NotBlank String name,
+        @NotNull Integer price,
         String description,
         Boolean isSale,
         String hubId
