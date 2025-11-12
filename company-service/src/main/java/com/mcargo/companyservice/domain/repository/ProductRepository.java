@@ -2,7 +2,6 @@ package com.mcargo.companyservice.domain.repository;
 
 import com.mcargo.companyservice.domain.entity.Product;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository {

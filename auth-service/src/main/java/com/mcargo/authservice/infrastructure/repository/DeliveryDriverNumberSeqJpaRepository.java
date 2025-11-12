@@ -1,7 +1,7 @@
-package com.mcargo.deliveryservice.user.infrastructure.repository;
+package com.mcargo.authservice.infrastructure.repository;
 
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriverNumberSeq;
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriverType;
+import com.mcargo.authservice.domain.entity.DeliveryDriverNumberSeq;
+import com.mcargo.authservice.domain.entity.DeliveryDriverType;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

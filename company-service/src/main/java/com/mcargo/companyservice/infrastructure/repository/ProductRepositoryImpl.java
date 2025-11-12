@@ -5,7 +5,6 @@ import com.mcargo.companyservice.domain.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,7 +22,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product save(Product product) {
         return productJpaRepository.save(product);
     }
-
     @Override
     public void delete(Product product) {
         productJpaRepository.delete(product);

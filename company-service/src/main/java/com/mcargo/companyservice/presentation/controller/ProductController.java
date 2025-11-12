@@ -5,6 +5,7 @@ import com.mcargo.companyservice.application.response.ProductResponseCode;
 import com.mcargo.companyservice.application.service.ProductService;
 import com.mcargo.companyservice.presentation.dto.request.ProductCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.ProductCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.ProductReadResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,39 +21,38 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/product")
-    public ApiResponse<ProductResponseCode> createProduct(
+    public ApiResponse<ProductCreateResponse> createProduct(
             @RequestBody ProductCreateRequest request) {
 
-        productService.createProduct(request);
+        ProductCreateResponse createdProduct = productService.createProduct(request);
 
-        return ApiResponse.of(PRODUCT_CREATE_SUCCESS);
+        return ApiResponse.of(PRODUCT_CREATE_SUCCESS, createdProduct);
     }
 
-    // 내부호출용, gateway로 오는 요청은 별도로 구현 필요
     @GetMapping("/product/{productId}")
     public ProductReadResponse getProduct(
             @PathVariable String productId) {
 
-        ProductReadResponse response = productService.getProduct(productId);
-
-        return response;
+        return productService.getProduct(productId);
     }
 
     @PatchMapping("/product/{productId}")
     public ApiResponse<ProductResponseCode> updateProduct(
             @PathVariable String productId,
+            @RequestParam Long userId,
             @RequestBody ProductUpdateRequest request) {
 
-        productService.updateProduct(productId, request);
+        productService.updateProduct(productId, userId, request);
 
         return ApiResponse.of(PRODUCT_UPDATE_SUCCESS);
     }
 
     @DeleteMapping("/product/{productId}")
     public ApiResponse<ProductResponseCode> deleteProduct(
-            @PathVariable String productId) {
+            @PathVariable String productId,
+            @RequestParam Long userId) {
 
-        productService.deleteProduct(productId);
+        productService.deleteProduct(productId, userId);
 
         return ApiResponse.of(PRODUCT_DELETE_SUCCESS);
     }
