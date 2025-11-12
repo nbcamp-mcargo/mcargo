@@ -1,10 +1,10 @@
-package com.mcargo.deliveryservice.user.application.service;
+package com.mcargo.authservice.application.service;
 
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriver;
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriverNumberSeq;
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriverType;
-import com.mcargo.deliveryservice.user.infrastructure.repository.DeliveryDriverJpaRepository;
-import com.mcargo.deliveryservice.user.infrastructure.repository.DeliveryDriverNumberSeqJpaRepository;
+import com.mcargo.authservice.domain.entity.DeliveryDriver;
+import com.mcargo.authservice.domain.entity.DeliveryDriverNumberSeq;
+import com.mcargo.authservice.domain.entity.DeliveryDriverType;
+import com.mcargo.authservice.infrastructure.repository.DeliveryDriverJpaRepository;
+import com.mcargo.authservice.infrastructure.repository.DeliveryDriverNumberSeqJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,5 +59,21 @@ public class DeliveryDriverService {
         }
 
         return driver.getDeliveryDriverId();
+    }
+
+    /**
+     * 배송 담당자 생성을 위한 시퀀스 생성
+     * @param hubId
+     */
+    public void createDeliveryDriverSeq(UUID hubId) {
+        DeliveryDriverNumberSeq driverSeq = null;
+
+        if(hubId == null) {
+            driverSeq = DeliveryDriverNumberSeq.createHubDriver();
+        } else {
+            driverSeq = DeliveryDriverNumberSeq.createCompanyDriver(hubId);
+        }
+
+        deliveryDriverNumberSeqJpaRepository.save(driverSeq);
     }
 }

@@ -1,7 +1,7 @@
-package com.mcargo.deliveryservice.user.infrastructure.repository;
+package com.mcargo.authservice.infrastructure.repository;
 
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriver;
-import com.mcargo.deliveryservice.user.domain.model.DeliveryDriverType;
+import com.mcargo.authservice.domain.entity.DeliveryDriver;
+import com.mcargo.authservice.domain.entity.DeliveryDriverType;
 import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
