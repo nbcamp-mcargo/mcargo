@@ -1,6 +1,6 @@
 package com.mcargo.deliveryservice.presentation.advice;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.common.exception.GlobalExceptionHandler;
 import com.mcargo.common.response.ApiResponse;
 import com.mcargo.common.response.ResponseCode;

@@ -1,4 +1,4 @@
-package com.mcargo.hubservice.infrastructure.kakaomap.dto;
+package com.mcargo.hubservice.application.dto;
 
 public record GetDistanceAndDurationResponse(
         String distanceText,

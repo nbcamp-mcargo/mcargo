@@ -1,20 +1,15 @@
 package com.mcargo.deliveryservice.presentation.controller;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.DeliveryResponseCode;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
 import com.mcargo.common.util.PageingUtils;
 import com.mcargo.deliveryservice.application.dto.DeliveryRouteSearchParam;
-import com.mcargo.deliveryservice.application.dto.DeliverySearchParam;
 import com.mcargo.deliveryservice.application.service.DeliveryRouteService;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
 import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
-import com.mcargo.deliveryservice.domain.model.DeliveryStatusEnum;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryRouteStatusDto;
-import com.mcargo.deliveryservice.presentation.response.ResDeliveryDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteStatusDto;
-import com.mcargo.deliveryservice.presentation.response.ResDeliveryStatusDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/deliverys/routes")
+@RequestMapping("/deliveries/routes")
 public class DeliveryRouteController {
     private final DeliveryRouteService deliveryRouteService;
 
@@ -35,7 +30,7 @@ public class DeliveryRouteController {
                                                                        @RequestBody ReqDeliveryRouteStatusDto reqDeliveryRouteStatusDto) {
 
         if(deliveryRouteStatus.equals(DeliveryRouteStatusEnum.COMPLETE) && reqDeliveryRouteStatusDto == null){
-            new DeliveryException(DeliveryErrorCode.DELIVERY_REQUIRED_FIELD_MISSING);
+            new DeliveryException(DeliveryResponseCode.DELIVERY_REQUIRED_FIELD_MISSING);
         }
 
         ResDeliveryRouteStatusDto resDeliveryRouteStatusDto = deliveryRouteService.updateDeliveryStatus(deliveryRouteId, deliveryRouteStatus, reqDeliveryRouteStatusDto);
@@ -49,7 +44,7 @@ public class DeliveryRouteController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sortBy,          // "createdAt" / "updatedAt"
             @RequestParam(defaultValue = "true") boolean isDescending){
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
 
         Page<ResDeliveryRouteDetailDto> deliveryRoutePage = deliveryRouteService.getDeliveryRoutes(pageable);
         return ApiResponse.of(DeliveryResponseCode.DELIVERY_LIST_FETCHED, deliveryRoutePage);
@@ -68,7 +63,7 @@ public class DeliveryRouteController {
             @RequestParam(required = false) String sortBy,          // "createdAt" / "updatedAt"
             @RequestParam(defaultValue = "true") boolean isDescending
     ){
-        Pageable pageable = PageingUtils.createPageable(0, size, sortBy, isDescending);
+        Pageable pageable = PageingUtils.createPageable(size, sortBy, isDescending);
         DeliveryRouteSearchParam deliveryRouteSearchParam = new DeliveryRouteSearchParam(deliveryRouteId, deliveryId, fromHubId, toHubId, deliveryRouteStatus);
 
         Page<ResDeliveryRouteDetailDto> deliverySearchPage = deliveryRouteService.searchDeliveryRoutes(deliveryRouteSearchParam, pageable);

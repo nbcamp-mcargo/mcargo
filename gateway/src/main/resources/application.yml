@@ -9,11 +9,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/products/**
-
         - id: delivery-service
           uri: lb://delivery-service
           predicates:
@@ -35,11 +30,16 @@ spring:
             - Path=/auths/**
           filters:
             - StripPrefix=0
-      default-filters:
-        - PreserveHostHeader
-    discovery:
-      locator:
-        enabled: true
+
+        - id: company-service
+          uri: lb://company-service
+          predicates:
+            - Path=/company/**,/product/**
+
+      discovery:
+        locator:
+          enabled: true
+
 eureka:
   client:
     service-url:

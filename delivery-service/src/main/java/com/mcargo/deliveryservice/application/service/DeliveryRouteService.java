@@ -1,21 +1,24 @@
 package com.mcargo.deliveryservice.application.service;
 
-import com.mcargo.common.exception.DeliveryException;
+import com.mcargo.common.response.ApiResponse;
 import com.mcargo.deliveryservice.application.dto.DeliveryRouteSearchParam;
 import com.mcargo.deliveryservice.application.dto.HubRouteInfo;
-import com.mcargo.deliveryservice.domain.exception.DeliveryErrorCode;
+import com.mcargo.deliveryservice.application.dto.NavigateHubRouteRequest;
+import com.mcargo.deliveryservice.domain.exception.DeliveryException;
 import com.mcargo.deliveryservice.domain.model.DeliveryRoute;
 import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
 import com.mcargo.deliveryservice.domain.repository.DeliveryRouteReposotory;
+import com.mcargo.deliveryservice.domain.response.DeliveryResponseCode;
+import com.mcargo.deliveryservice.infrastructure.client.HubClient;
 import com.mcargo.deliveryservice.presentation.request.ReqDeliveryRouteStatusDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteDetailDto;
 import com.mcargo.deliveryservice.presentation.response.ResDeliveryRouteStatusDto;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +30,25 @@ import java.util.UUID;
 public class DeliveryRouteService {
 
     private final DeliveryRouteReposotory deliveryRouteReposotory;
+    private final HubClient hubClient;
 
-    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, String address){
+    public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, UUID receiverCompId){
         // TODO: 허브 API로 경로 정보 조회
-//            List<HubRouteInfo> hubRoutes = hubClient.getRoutes(reqDeliveryDto.fromHubId(), reqDeliveryDto.toHubId());
-        List<HubRouteInfo> hubRoutes = getMockHubRoutes(
-                fromHubId,
-                toHubId
-        );
+        ApiResponse<List<HubRouteInfo>> hubRoutes = hubClient.getHubRoutes(new NavigateHubRouteRequest(fromHubId, toHubId, toHubId));
+        List<HubRouteInfo> hubRouteList = hubRoutes.getData();
+
+//        List<HubRouteInfo> hubRoutes = getMockHubRoutes(
+//                fromHubId,
+//                toHubId
+//        );
 
         List<DeliveryRoute> routes = new ArrayList<>();
-        for(HubRouteInfo hubRouteInfo : hubRoutes){
+        for(HubRouteInfo hubRouteInfo : hubRouteList){
+            UUID deliveryDriveId = hubRouteInfo.deliveryDriverId();
+            if(deliveryDriveId == null) {
+                deliveryDriveId = addDeliveryDriver();
+            }
+
             DeliveryRoute route = DeliveryRoute.createDeliveryRoute(
                     hubRouteInfo.sequence(),
                     hubRouteInfo.startHubId(),
@@ -51,6 +62,12 @@ public class DeliveryRouteService {
         }
 
         return routes;
+    }
+
+    private UUID addDeliveryDriver() {
+        // TODO : 배송 기사 추가
+
+        return null;
     }
 
 
@@ -90,7 +107,7 @@ public class DeliveryRouteService {
         DeliveryRoute deliveryRoute = findById(deliveryRouteId);
 
         if(deliveryRoute.getDeliveryRouteStatus().equals(DeliveryRouteStatusEnum.CANCELED)){
-            new DeliveryException(DeliveryErrorCode.DELIVERY_ALREADY_CANCELED);
+            new DeliveryException(DeliveryResponseCode.DELIVERY_ALREADY_CANCELED);
         }
 
         deliveryRoute.updateStatus(deliveryRouteStatus);
@@ -137,6 +154,6 @@ public class DeliveryRouteService {
 
     public DeliveryRoute findById(UUID deliveryRouteId) {
         return deliveryRouteReposotory.findById(deliveryRouteId)
-                .orElseThrow(() -> new DeliveryException(DeliveryErrorCode.DELEVERY_ROUTE_NOT_FOUND));
+                .orElseThrow(() -> new DeliveryException(DeliveryResponseCode.DELEVERY_ROUTE_NOT_FOUND));
     }
 }
