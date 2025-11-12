@@ -1,16 +1,18 @@
 spring:
   application:
     name: hub-service
+  config:
+    import: optional:file:.env-hub[.properties]
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/mcargo
-    username: postgres
-    password: 1234
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DDL_AUTO}
     show-sql: true
     properties:
       hibernate:
@@ -18,10 +20,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-  port: 19094
+  port: ${PORT}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:19090/eureka/
+      defaultZone: ${EUREKA_SERVICE_URL}
 
+kakao:
+  rest-api-key: ${KAKAO_API_KEY}

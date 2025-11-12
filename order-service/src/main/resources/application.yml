@@ -7,9 +7,6 @@ spring:
     username: ${ORDER_DB_USERNAME}
     password :  ${ORDER_DB_PASSWORD}
 
-server:
-  port: 19093
-
 eureka:
   client:
     service-url:
