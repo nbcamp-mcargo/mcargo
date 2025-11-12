@@ -15,4 +15,12 @@ POST http://localhost:19094/hub-routes
 ### 허브상품 상세조회
 GET http://localhost:19094/hubs/products/1b9b4394-a7c3-4016-b5ed-d641fe7f9b7e
 
-### 업체 정보 조회
+### 허브경로 안내
+POST http://localhost:19094/hub-routes/navigation
+Content-Type: application/json
+
+{
+  "fromHubId": "3ca1bce0-e132-45e5-b937-11588cb0b9ba",
+  "toHubId": "e7305b38-ec4b-41af-87c4-01168f5579c6",
+  "toCompanyId": "a8647efd-76d5-45b4-84f7-52b7529e07f8"
+}
