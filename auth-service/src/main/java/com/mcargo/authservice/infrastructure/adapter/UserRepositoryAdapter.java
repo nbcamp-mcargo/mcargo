@@ -1,10 +1,12 @@
-package com.mcargo.authservice.infrastructure.repository;
+package com.mcargo.authservice.infrastructure.adapter;
 
 import com.mcargo.authservice.domain.entity.User;
 import com.mcargo.authservice.domain.repository.UserRepository;
-import java.util.Optional;
+import com.mcargo.authservice.infrastructure.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor

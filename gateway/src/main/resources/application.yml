@@ -1,6 +1,9 @@
 spring:
   application:
     name: gateway-service
+  config:
+    import:
+      - optional:file:.env[.properties]
   main:
     web-application-type: reactive
   cloud:
@@ -45,4 +48,4 @@ server:
 
 service:
   jwt:
-    secret-key: ${JWT_SECRET:7ouTf7qUVe9KZfJh4QYOGe56us3HgAvamCkyntP0MkY=}
+    secret-key: ${JWT_KEY}

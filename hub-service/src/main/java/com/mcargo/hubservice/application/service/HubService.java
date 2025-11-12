@@ -1,5 +1,7 @@
 package com.mcargo.hubservice.application.service;
 
+import com.mcargo.hubservice.application.port.CompanyPort;
+import com.mcargo.hubservice.application.port.UserPort;
 import com.mcargo.hubservice.domain.entity.HubProductStatus;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
@@ -7,10 +9,7 @@ import com.mcargo.common.util.PageingUtils;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubProduct;
 import com.mcargo.hubservice.domain.repository.HubRepository;
-import com.mcargo.hubservice.infrastructure.client.CompanyClient;
-import com.mcargo.hubservice.infrastructure.client.UserClient;
 import com.mcargo.hubservice.presentation.dto.*;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class HubService {
 
     private final HubRepository hubRepository;
-    private final CompanyClient companyClient;
-    private final UserClient userClient;
+    private final CompanyPort companyPort;
+    private final UserPort userPort;
 
     //ㅡㅡ 허브 관련 ㅡㅡ
     // 허브 생성
@@ -123,7 +121,7 @@ public class HubService {
     // ㅡㅡ허브 상품 관련ㅡㅡ
     // 허브상품 추가
     @Transactional
-    public void addHubProduct(@Valid addHubProductRequest request) {
+    public void addHubProduct(AddHubProductRequest request) {
         Hub findHub = hubRepository.findById(request.hubId()).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
 
@@ -176,7 +174,6 @@ public class HubService {
                 hp.getStatus(),
                 hp.getStock()
         ));
-
     }
 
     // 허브상품 주문 가능 여부 확인
@@ -248,16 +245,14 @@ public class HubService {
     }
 
     // 허브 반환. 허브 경로에서 사용
-    protected Hub getHub2(UUID hubId) {
+    protected Hub getHubAsHub(UUID hubId) {
         return hubRepository.findById(hubId).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_NOT_FOUND));
 
     }
 
-    // 모든 허브id 반환. 허브 경로에서 사용
-    protected List<UUID> getAllHubId() {
-        return hubRepository.findAllHub().stream()
-                .map(Hub::getId)
-                .collect(Collectors.toList());
+    // 모든 허브 반환. 허브 경로에서 사용
+    protected List<Hub> getAllHub() {
+        return hubRepository.findAll();
     }
 }

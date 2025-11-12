@@ -1,10 +1,12 @@
 package com.mcargo.hubservice.application.service;
 
+import com.mcargo.hubservice.application.dto.GetDistanceAndDurationResponse;
+import com.mcargo.hubservice.application.dto.RouteCreatorsResponse;
+import com.mcargo.hubservice.application.util.PredictDistanceAndDuration;
+import com.mcargo.hubservice.application.util.RouteCreator;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubRoute;
 import com.mcargo.hubservice.domain.repository.HubRouteRepository;
-import com.mcargo.hubservice.infrastructure.kakaomap.KakaoMapApi;
-import com.mcargo.hubservice.infrastructure.kakaomap.dto.GetDistanceAndDurationResponse;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteRequest;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,73 +15,94 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class HubRouteService {
 
-    private final KakaoMapApi kakaoMapApi;
+    private final RouteCreator routeCreator;
+    private final PredictDistanceAndDuration predictDistanceAndDuration;
     private final HubRouteRepository hubRouteRepository;
     private final HubService hubService;
 
     // 허브 경로 생성
     @Transactional
     public void createHubRoute() {
-        List<UUID> findHubUds = hubService.getAllHubId();
-        //TODO 일단 동작은 하도록 p2p로 구현
-        List<HubRoute> allRoutes = new ArrayList<>();
-        for (int i = 0; i < findHubUds.size(); i++) {
-            for (int j = 0; j < findHubUds.size(); j++) {
-                allRoutes.add(
-                        HubRoute.create(findHubUds.get(i), findHubUds.get(j)));
-            }
+        List<Hub> findHubUds = hubService.getAllHub();
+
+        List<RouteCreatorsResponse> responses = routeCreator.routeCreate(findHubUds);
+
+        List<HubRoute> hubRoutes = new ArrayList<>();
+        for (RouteCreatorsResponse route : responses) {
+            // HubRoute 생성
+            HubRoute hubRoute = HubRoute.create(route.fromHubId(), route.toHubId(), route.sequenceSteps());
+            hubRoutes.add(hubRoute);
         }
-        hubRouteRepository.saveALl(allRoutes);
+        hubRouteRepository.deleteAll();
+        hubRouteRepository.saveALl(hubRoutes);
     }
 
-    // 허브 경로 안내. p2p라 경로 저장할 필요가 없어서 db 조회는 없는 상태
-    // @Transactional(readOnly = true)
+    // 허브 경로 안내.
+    @Transactional(readOnly = true)
     public List<NavigateHubRouteResponse> navigateHubRoute(NavigateHubRouteRequest request) {
         List<NavigateHubRouteResponse> res = new ArrayList<>();
-        Hub fromHub = hubService.getHub2(request.fromHubId());
-        Hub toHub = hubService.getHub2(request.toHubId());
-        //TODO 컴퍼니 정보 요청
+        int sequence = 1;
 
-        // 카카오api 요청
-        GetDistanceAndDurationResponse expectData = kakaoMapApi.getDistanceAndDuration(fromHub, toHub);
+        // 출발 허브와 도착허브가 같지 않다면, 허브에서 바로 업체배송이 아닌 경우
+        if (!request.fromHubId().equals(request.toHubId())) {
 
-        NavigateHubRouteResponse n1 = new NavigateHubRouteResponse(
-                1,
+            int hubDriverNumber = 1; //TODO 허브배송담당자 배정
+
+            HubRoute findHubRoute = hubRouteRepository.findByFromHubIdAndToHubId(request.fromHubId(), request.toHubId());
+
+            sequence += findHubRoute.getHubRouteSequences().size(); // 마지막 업체배송 시퀀스를 구하기 위함
+            findHubRoute.getHubRouteSequences().stream().forEach(
+                    seq -> {
+                        Hub seqFromHub = hubService.getHubAsHub(seq.getSeqFromHubId());
+                        Hub seqToHub = hubService.getHubAsHub(seq.getSeqToHubId());
+
+                        // 예상 시간, 거리 계산
+                        GetDistanceAndDurationResponse hubPredictData = predictDistanceAndDuration.getDistanceAndDuration(seqFromHub, seqToHub);
+                        res.add(new NavigateHubRouteResponse(
+                                seq.getSequence(),
+
+                                seqFromHub.getName(),
+                                seqToHub.getName(),
+                                seqFromHub.getAddress(),
+                                seqToHub.getAddress(),
+
+                                hubDriverNumber,
+                                hubPredictData.distanceText(),
+                                hubPredictData.durationText()
+                        ));
+                    });
+
+        }
+
+        // 업체 배송
+        Hub fromHub = hubService.getHubAsHub(request.toHubId());
+//        Company toCompany =  TODO 컴퍼니 정보 요청
+
+        Hub toHub = hubService.getHubAsHub(request.fromHubId());
+
+        // 예상 시간, 거리 계산
+        GetDistanceAndDurationResponse companyPredictData = predictDistanceAndDuration.getDistanceAndDuration(fromHub, toHub);
+
+        res.add(new NavigateHubRouteResponse(
+                sequence,
 
                 fromHub.getName(),
-                toHub.getName(),
+                toHub.getName(),        //TODO 컴퍼니로
                 fromHub.getAddress(),
-                toHub.getAddress(),
+                toHub.getAddress(),     //TODO
 
-                null, // 배송 경로 기록에서 배정
-                expectData.distanceText(),
-                expectData.durationText()
-        );
-        NavigateHubRouteResponse n2 = new NavigateHubRouteResponse(
-                2,
-
-                toHub.getName(),
-                "수령업체", //TODO 수령업체 관련 수정예정
-                toHub.getAddress(),
-                "수령업체 주소",
-
-                1, //hubService.assignDriver(request.toHubId()), TODO 배송담당자 요청 구현하고 수정
-                "3",
-                "4"
-        );
-
-        res.add(n1);
-        res.add(n2);
+                2, //TODO 업체 배송담당자 배정
+                companyPredictData.distanceText(),
+                companyPredictData.durationText()
+        ));
 
         return res;
     }
-
 
 }
 

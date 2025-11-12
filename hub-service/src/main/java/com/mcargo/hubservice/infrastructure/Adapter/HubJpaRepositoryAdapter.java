@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ public class HubJpaRepositoryAdapter implements HubRepository {
 
     // 모든 허브 반환
     @Override
-    public Collection<Hub> findAllHub() {
+    public List<Hub> findAll() {
         return hubJpaRepository.findAll();
     }
 
