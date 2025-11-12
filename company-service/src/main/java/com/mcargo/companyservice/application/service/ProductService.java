@@ -7,7 +7,6 @@ import com.mcargo.companyservice.domain.entity.Product;
 import com.mcargo.companyservice.domain.repository.CompanyRepository;
 import com.mcargo.companyservice.domain.repository.ProductRepository;
 import com.mcargo.companyservice.presentation.dto.request.ProductCreateRequest;
-import com.mcargo.companyservice.presentation.dto.request.ProductReadRequest;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.ProductReadResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +35,9 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public ProductReadResponse getProduct(String productId, String companyId) {
+    public ProductReadResponse getProduct(String productId) {
 
-        if (!companyRepository.existsById(companyId)) {
-            throw new CompanyException(COMPANY_NOT_FOUND);
-        }
-
-        Product product = productRepository.findByIdAndCompanyId(productId, companyId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 
         return product.toProductReadResponse(product);
@@ -59,13 +54,9 @@ public class ProductService {
         product.update(request);
     }
 
-    public void deleteProduct(String productId, String companyId) {
+    public void deleteProduct(String productId) {
 
-        if (!companyRepository.existsById(companyId)) {
-            throw new CompanyException(COMPANY_NOT_FOUND);
-        }
-
-        Product product = productRepository.findByIdAndCompanyId(productId, companyId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 
         productRepository.delete(product);

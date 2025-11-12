@@ -25,21 +25,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void deleteById(String productId) {
-        productJpaRepository.deleteById(productId);
-    }
-
-    @Override
-    public List<Product> findAllByIdIn(List<String> productIds) {
-        return productJpaRepository.findAllByIdIn(productIds);
-    }
-
-    @Override
-    public Optional<Product> findByIdAndCompanyId(String productId, String companyId) {
-        return productJpaRepository.findByIdAndCompanyId(productId, companyId);
-    }
-
-    @Override
     public void delete(Product product) {
         productJpaRepository.delete(product);
     }

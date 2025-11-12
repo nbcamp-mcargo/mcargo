@@ -30,10 +30,9 @@ public class ProductController {
 
     @GetMapping("/product/{productId}")
     public ApiResponse<ProductReadResponse> getProduct(
-            @PathVariable String productId,
-            @RequestParam String companyId) {
+            @PathVariable String productId) {
 
-        ProductReadResponse response = productService.getProduct(productId, companyId);
+        ProductReadResponse response = productService.getProduct(productId);
 
         return ApiResponse.of(PRODUCT_READ_SUCCESS, response);
     }
@@ -50,10 +49,9 @@ public class ProductController {
 
     @DeleteMapping("/product/{productId}")
     public ApiResponse<ProductResponseCode> deleteProduct(
-            @PathVariable String productId,
-            @RequestParam String companyId) {
+            @PathVariable String productId) {
 
-        productService.deleteProduct(productId, companyId);
+        productService.deleteProduct(productId);
 
         return ApiResponse.of(PRODUCT_DELETE_SUCCESS);
     }
