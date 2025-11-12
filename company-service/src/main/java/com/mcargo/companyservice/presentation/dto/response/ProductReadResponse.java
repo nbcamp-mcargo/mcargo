@@ -7,4 +7,5 @@ public record ProductReadResponse(
         String description,
         Boolean isSale,
         String hubId
-) { }
+) {
+}

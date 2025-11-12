@@ -1,7 +1,9 @@
 package com.mcargo.companyservice.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mcargo.common.entity.BaseEntity;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.ProductCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.ProductReadResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_product")
-public class Product {
+public class Product extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,6 +30,8 @@ public class Product {
     private Boolean isSale;
 
     private String hubId;
+
+    private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
@@ -55,25 +59,21 @@ public class Product {
         );
     }
 
-    public void update(ProductUpdateRequest request) {
-        if (request.name() != null) {
-            this.name = request.name();
-        }
+    public void updateEntity(ProductUpdateRequest request) {
+        this.name = request.name();
+        this.price = request.price();
+        this.description = request.description();
+        this.isSale = request.isSale();
+        this.hubId = request.hubId();
+    }
 
-        if (request.price() != null) {
-            this.price = request.price();
-        }
-
-        if (request.description() != null) {
-            this.description = request.description();
-        }
-
-        if (request.isSale() != null) {
-            this.isSale = request.isSale();
-        }
-
-        if (request.hubId() != null) {
-            this.hubId = request.hubId();
-        }
+    public ProductCreateResponse toCreateResponse() {
+        return new ProductCreateResponse(
+                this.name,
+                this.price,
+                this.description,
+                this.isSale,
+                this.hubId
+        );
     }
 }
