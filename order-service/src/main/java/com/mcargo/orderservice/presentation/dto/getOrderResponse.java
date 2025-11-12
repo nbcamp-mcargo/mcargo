@@ -29,8 +29,8 @@ public record getOrderResponse(
                 order.getStatus(),
                 order.getMemo(),
                 order.getTotalPrice(),
-                order.getProvider_comp_id(),
-                order.getReceiver_comp_id(),
+                order.getProviderCompId(),
+                order.getReceiverCompId(),
                 order.getDelivery_id(),
                 productResponses
         );
@@ -44,7 +44,7 @@ public record getOrderResponse(
         public static OrderProductResponse from(OrderProduct orderProduct) {
             return new OrderProductResponse(
                     orderProduct.getId(),
-                    orderProduct.getHub_product_id(),
+                    orderProduct.getHubProductId(),
                     orderProduct.getQuantity()
             );
         }

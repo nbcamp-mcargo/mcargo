@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -18,13 +19,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    // 주문 생성은 업체 담당자만 가능. 주문가능 한 상품인지 허브로 확인 요청
+    // 주문 생성
     @PostMapping
-    public ApiResponse<Void> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        orderService.createOrder(request);
-        return ApiResponse.of(OrderResponseCode.ORDER_CREATED);
+    public ApiResponse<Object> createOrder(@Valid @RequestBody CreateOrderRequest request) {
+        return ApiResponse.of(OrderResponseCode.ORDER_OK, orderService.createOrder(request));
     }
 
     // 주문 목록 조회

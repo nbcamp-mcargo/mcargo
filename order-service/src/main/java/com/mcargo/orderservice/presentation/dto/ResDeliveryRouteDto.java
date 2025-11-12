@@ -1,10 +1,4 @@
-package com.mcargo.deliveryservice.presentation.response;
-
-import com.mcargo.deliveryservice.domain.model.DeliveryRouteStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package com.mcargo.orderservice.presentation.dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

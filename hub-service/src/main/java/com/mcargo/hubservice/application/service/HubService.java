@@ -39,7 +39,6 @@ public class HubService {
         hubRepository.save(newHub);
     }
 
-
     // 허브 수정
     @Transactional
     public void updateHub(UUID hubId, UpdateHubRequest request) {
@@ -174,7 +173,6 @@ public class HubService {
                 orderedItem -> {
                     HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(orderedItem.hubProductId()).orElseThrow(
                             () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
-
                     return checkOrderable(findHubProduct, orderedItem.quantity());
                 }).toList();
     }

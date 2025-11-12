@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record HubRouteInfo(
-        UUID startHubId,
-        UUID destHubId,
+        UUID seqStartHubId,
+        UUID seqDestHubId,
         Long predictedTime,
         Long predictedDistance,
         int sequence,

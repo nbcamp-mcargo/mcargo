@@ -24,3 +24,18 @@ Content-Type: application/json
   "toHubId": "e7305b38-ec4b-41af-87c4-01168f5579c6",
   "toCompanyId": "a8647efd-76d5-45b4-84f7-52b7529e07f8"
 }
+
+### 주문 생성
+POST http://localhost:19093/orders
+Content-Type: application/json
+
+{
+  "memo": "배송 시 문 앞에 놔주세요.",
+  "orderProducts": [
+    {
+      "hubProductId": "1b9b4394-a7c3-4016-b5ed-d641fe7f9b7e",
+      "productId" : "f7d6282d-5b6b-473c-ad28-7a3347044fbe",
+      "quantity": 2
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package com.mcargo.orderservice.domain.entity;
 
 import com.mcargo.common.entity.BaseEntity;
+import com.mcargo.orderservice.presentation.dto.CreateOrderProductRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,26 +29,34 @@ public class Order extends BaseEntity {
 
     private Integer totalPrice;
 
-    private UUID provider_comp_id;
+    private UUID providerCompId; // 공급업체 아이디
 
-    private UUID receiver_comp_id;
+    private UUID receiverCompId; // 수령업체 아이디
+
+    private String receiverAddress;
 
     private UUID delivery_id;
 
     @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_id")
-    private List<OrderProduct> OrderProducts;
+    private List<OrderProduct> orderProducts;
 
-    public static Order createOrder(String status, String memo, Integer totalPrice) {
+    public static Order createOrder(String memo, List<OrderProduct> orderProducts) {
         Order order = new Order();
-        order.status = status;
         order.memo = memo;
-        order.totalPrice = totalPrice;
+        order.orderProducts = orderProducts;
+
+        int priceSum = 0;
+        for (OrderProduct orderProduct : orderProducts) {
+            priceSum += orderProduct.getPrice();
+        }
+        order.totalPrice = priceSum;
+        order.status = "재고 확인 대기 중";
         return order;
     }
 
-    public void addOrderProducts(List<OrderProduct> orderProducts) {
-        this.OrderProducts = orderProducts;
+    public void addOrderProducts(OrderProduct orderProduct) {
+        this.orderProducts.add(orderProduct);
     }
 
     public void updateOrder(String status, String memo, Integer totalPrice) {

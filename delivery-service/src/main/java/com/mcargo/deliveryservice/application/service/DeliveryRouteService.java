@@ -34,8 +34,7 @@ public class DeliveryRouteService {
 
     public List<DeliveryRoute> createDeliveryRoute(UUID fromHubId, UUID toHubId, UUID receiverCompId){
         // TODO: 허브 API로 경로 정보 조회
-        ApiResponse<List<HubRouteInfo>> hubRoutes = hubClient.getHubRoutes(new NavigateHubRouteRequest(fromHubId, toHubId, toHubId));
-        List<HubRouteInfo> hubRouteList = hubRoutes.getData();
+        List<HubRouteInfo> hubRouteList = hubClient.getHubRoutes(new NavigateHubRouteRequest(fromHubId, toHubId, receiverCompId));
 
 //        List<HubRouteInfo> hubRoutes = getMockHubRoutes(
 //                fromHubId,
@@ -43,7 +42,9 @@ public class DeliveryRouteService {
 //        );
 
         List<DeliveryRoute> routes = new ArrayList<>();
+        System.out.println(hubRouteList);
         for(HubRouteInfo hubRouteInfo : hubRouteList){
+
             UUID deliveryDriveId = hubRouteInfo.deliveryDriverId();
             if(deliveryDriveId == null) {
                 deliveryDriveId = addDeliveryDriver();
@@ -51,8 +52,8 @@ public class DeliveryRouteService {
 
             DeliveryRoute route = DeliveryRoute.createDeliveryRoute(
                     hubRouteInfo.sequence(),
-                    hubRouteInfo.startHubId(),
-                    hubRouteInfo.destHubId(),
+                    hubRouteInfo.seqStartHubId(),
+                    hubRouteInfo.seqDestHubId(),
                     hubRouteInfo.predictedDistance(),
                     hubRouteInfo.predictedTime(),
                     hubRouteInfo.deliveryDriverId()

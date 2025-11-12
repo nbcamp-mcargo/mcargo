@@ -24,12 +24,10 @@ public class DeliveryController {
 
     // 배송 생성
     @PostMapping
-    public ApiResponse<ResDeliveryDto> createDelivery(@RequestBody ReqDeliveryDto reqDeliveryDto){
+    public ResDeliveryDto createDelivery(@RequestBody ReqDeliveryDto reqDeliveryDto){
         // TODO: 사용자 정보 추가
 
-        ResDeliveryDto resDeliveryDto = deliveryService.createDelivery(reqDeliveryDto);
-
-        return ApiResponse.of(DeliveryResponseCode.DELIVERY_INFO_CREATED, resDeliveryDto);
+        return deliveryService.createDelivery(reqDeliveryDto);
     }
 
     // 배송 취소

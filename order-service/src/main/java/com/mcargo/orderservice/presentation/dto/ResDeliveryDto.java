@@ -1,10 +1,4 @@
-package com.mcargo.deliveryservice.presentation.response;
-
-import com.mcargo.deliveryservice.domain.model.DeliveryStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package com.mcargo.orderservice.presentation.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +7,7 @@ import java.util.UUID;
 public record ResDeliveryDto (
         UUID deliveryId,
         UUID orderId,
-//        DeliveryStatusEnum deliveryStatus,
+        String deliveryStatus,
         String address,
         Long receiverUserId,
         String receiverSlackId,

@@ -73,7 +73,7 @@ public class DeliveryService {
                         route.getSequence(),
                         route.getFromHubId(),
                         route.getToHubId(),
-                        route.getDeliveryRouteStatus(),
+//                        route.getDeliveryRouteStatus(),
                         route.getPredictedDistance(),
                         route.getPredictedTime(),
                         route.getDeliveryDriverId(),
@@ -85,7 +85,7 @@ public class DeliveryService {
         ResDeliveryDto resDeliveryDto = new ResDeliveryDto(
                 delivery.getDeliveryId(),
                 delivery.getOrderId(),
-                delivery.getDeliveryStatus(),
+//                delivery.getDeliveryStatus(),
                 delivery.getAddress(),
                 delivery.getReceiverUserId(),
                 delivery.getReceiverSlackId(),

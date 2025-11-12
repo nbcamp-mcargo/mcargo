@@ -20,15 +20,15 @@ public class OrderProductController {
 
     private final OrderProductService orderProductService;
 
-    // 주문 상품 생성
-    @PostMapping
-    public ApiResponse<Void> createOrderProduct(
-            @PathVariable UUID orderId,
-            @RequestBody @Valid CreateOrderProductRequest request
-    ) {
-        UUID orderProductId = orderProductService.createOrderProduct(orderId, request);
-        return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_CREATED);
-    }
+//    // 주문 상품 생성
+//    @PostMapping
+//    public ApiResponse<Void> createOrderProduct(
+//            @PathVariable UUID orderId,
+//            @RequestBody @Valid CreateOrderProductRequest request
+//    ) {
+//        UUID orderProductId = orderProductService.createOrderProduct(orderId, request);
+//        return ApiResponse.of(OrderResponseCode.ORDER_PRODUCT_CREATED);
+//    }
 
     // 주문 상품 목록 조회
     @GetMapping

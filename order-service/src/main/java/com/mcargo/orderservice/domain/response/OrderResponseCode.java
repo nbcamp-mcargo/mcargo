@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum OrderResponseCode implements ResponseCode {
 
     //성공
-    ORDER_CREATED(HttpStatus.CREATED, "요청하신 주문에 성공했습니다."),
+    ORDER_OK(HttpStatus.OK, "요청하신 주문에 대한 응답입니다."),
     ORDER_UPDATED(HttpStatus.OK, "요청하신 주문을 업데이트 했습니다."),
     ORDER_DELETED(HttpStatus.OK, "요청하신 주문을 삭제 했습니다."),
     ORDER_FOUND(HttpStatus.FOUND, "주문을 찾았습니다."),

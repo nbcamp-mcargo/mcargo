@@ -24,20 +24,20 @@ public class OrderProductService {
     private final OrderRepository orderRepository;
 
     // 주문 상품 생성
-    @Transactional
-    public UUID createOrderProduct(UUID orderId, CreateOrderProductRequest request) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderException(OrderResponseCode.ORDER_NOT_FOUND));
-
-        OrderProduct orderProduct = OrderProduct.create(
-                request.hub_product_id(),
-                request.quantity()
-        );
-
-        order.getOrderProducts().add(orderProduct);
-
-        return orderProduct.getId();
-    }
+//    @Transactional
+//    public UUID createOrderProduct(UUID orderId, CreateOrderProductRequest request) {
+//        Order order = orderRepository.findById(orderId)
+//                .orElseThrow(() -> new OrderException(OrderResponseCode.ORDER_NOT_FOUND));
+//
+//        OrderProduct orderProduct = OrderProduct.create(
+//                request.hubProductId(),
+//                request.quantity()
+//        );
+//
+//        order.getOrderProducts().add(orderProduct);
+//
+//        return orderProduct.getId();
+//    }
 
     // 주문 상품 목록 조회
     @Transactional(readOnly = true)

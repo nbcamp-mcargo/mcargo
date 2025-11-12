@@ -25,16 +25,9 @@ public class GeminiPrediction implements PredictAiUtils {
 
         GenerateContentResponse response =
                 client.models.generateContent("gemini-2.5-flash",
-                        "주문 번호 : 1\n" +
-                        "주문자 정보 : 김말숙 / msk@seafood.world\n" +
-                        "주문 시간 : 2025-12-08 10:00:00\n" +
-                        "상품 정보 : 마른 오징어 50박스\n" +
-                        "요청 사항 : 12월 12일 3시까지는 보내주세요!\n" +
-                        "발송지 : 경기 북부 센터\n" +
-                        "경유지 : 대전광역시 센터, 부산광역시 센터\n" +
-                        "도착지 : 부산시 사하구 낙동대로 1번길 1 해산물월드\n" +
-                        "배송담당자 : 고길동 / kdk@sparta.world\n" +
-                        "이 데이터를 보고 같은 형식으로 너가 아무거나 생성해서 보여줘봐",
+                        "상품 주문이 들어왔는데 정보를 줄테니 최소 발송기한이 얼마인지 예측해줘.\n" +
+                                aiRequestMessage +
+                                "이 정보를 기반으로 최소 발송 기한은 ~입니다. 라는 형식으로 예측해줘",
                         config
                 );
 

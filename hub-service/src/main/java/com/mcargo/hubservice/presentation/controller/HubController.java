@@ -128,9 +128,9 @@ public class HubController {
 
 
     // 허브상품 주문 가능 여부 확인. 내부호출용도
-    @PostMapping("/product/orderable")
+    @PostMapping("/products/orderable")
     public List<GetHubProductOrderableResponse> getHubProductOrderable(
-            @Valid @RequestBody List<GetHubProductOrderableRequest> request) {
+            @RequestBody List<GetHubProductOrderableRequest> request) {
         return hubService.getHubProductOrderable(request);
     }
 
