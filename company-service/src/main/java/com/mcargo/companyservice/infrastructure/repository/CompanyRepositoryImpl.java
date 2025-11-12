@@ -27,4 +27,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     public void deleteById(String companyId) {
         companyJpaRepository.deleteById(companyId);
     }
+
+    @Override
+    public boolean existsById(String companyId) {
+        return companyJpaRepository.existsById(companyId);
+    }
 }

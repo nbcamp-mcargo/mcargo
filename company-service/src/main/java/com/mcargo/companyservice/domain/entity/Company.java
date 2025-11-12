@@ -1,5 +1,6 @@
 package com.mcargo.companyservice.domain.entity;
 
+import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,6 +36,24 @@ public class Company {
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
+    }
+
+    public void update(CompanyUpdateRequest request) {
+        if (request.name() != null) {
+            this.name = request.name();
+        }
+
+        if (request.address() != null) {
+            this.address = request.address();
+        }
+
+        if (request.latitude() != null) {
+            this.latitude = request.latitude();
+        }
+
+        if (request.longitude() != null) {
+            this.longitude = request.longitude();
+        }
     }
 
     public CompanyReadResponse toCompanyReadResponse() {
