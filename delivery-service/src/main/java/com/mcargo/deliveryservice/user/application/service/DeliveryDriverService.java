@@ -47,11 +47,18 @@ public class DeliveryDriverService {
         deliveryDriverJpaRepository.save(driver);
     }
 
-    public UUID addHubDeliveryDriver(UUID fromHubId) {
-        // 해당 허브 사용자 중 배송 가능한 사용자 찾기
+    public UUID getNextDriver(UUID hubId, DeliveryDriverType deliveryDriverType) {
+        UUID driverId = null;
+        DeliveryDriver driver = null;
 
-        // 해당 사용자 중 우선순위가 가장 높은 사람 return
+        if (hubId == null) { // 허브 드라이버 가져옴
+            driver = deliveryDriverJpaRepository.findDeliveryDriver(DeliveryDriverType.HUB_DRIVER, null)
+                    .orElseThrow();
+        } else {
+            driver = deliveryDriverJpaRepository.findDeliveryDriver(DeliveryDriverType.COMPANY_DRIVER, hubId)
+                    .orElseThrow();
+        }
 
-        return null;
+        return driver.getDeliveryDriverId();
     }
 }

@@ -2,9 +2,11 @@ package com.mcargo.deliveryservice.user.domain.model;
 
 import com.mcargo.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@Getter
 @Entity
 @Table(name = "p_delivery_driver")
 public class DeliveryDriver extends BaseEntity {
@@ -16,23 +18,24 @@ public class DeliveryDriver extends BaseEntity {
     // TODO : 사용자 테이블과 연관관계 추가
     private Long userId;
 
+    private UUID hubId;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DeliveryDriverType deliveryDriverType;
 
     @Column(nullable = false)
-    private int deliveryDriverSeq;
-//    private boolean isAvailable;
+    private int deliveryDriverNumber;
+    private boolean isAvailable;
 
 
     public static DeliveryDriver createDeliveryDriver(Long userId,
                                                       DeliveryDriverType deliveryDriverType,
-                                                      int deliveryDriverSeq) {
+                                                      int deliveryDriverNumber) {
 
         DeliveryDriver deliveryDriver = new DeliveryDriver();
         deliveryDriver.userId = userId;
         deliveryDriver.deliveryDriverType = deliveryDriverType;
-        deliveryDriver.deliveryDriverSeq = deliveryDriverSeq;
+        deliveryDriver.deliveryDriverNumber = deliveryDriverNumber;
 
         return deliveryDriver;
     }
