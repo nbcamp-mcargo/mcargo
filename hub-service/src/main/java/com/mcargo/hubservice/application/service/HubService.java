@@ -1,7 +1,6 @@
 package com.mcargo.hubservice.application.service;
 
 import com.mcargo.hubservice.application.port.CompanyPort;
-import com.mcargo.hubservice.application.port.UserPort;
 import com.mcargo.hubservice.domain.entity.HubProductStatus;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +24,6 @@ public class HubService {
 
     private final HubRepository hubRepository;
     private final CompanyPort companyPort;
-    private final UserPort userPort;
 
     //ㅡㅡ 허브 관련 ㅡㅡ
     // 허브 생성
@@ -188,37 +185,7 @@ public class HubService {
 
 
 
-
-
-
-
     // ㅡㅡ protected, private ㅡㅡ
-    // 업체 배송 담당자 배정. 허브 경로에서 사용
-    @Transactional
-    protected Integer assignDriver(UUID hubId) {
-        Hub findHub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new HubException(HubResponseCode.HUB_NOT_FOUND));
-        int lastDriverNumber = findHub.getLastDriverNumber();
-
-        //TODO 요청으로 해당 허브 소속의 업체배송 가능한 배송번호리스트 필요
-        List<Integer> availableDriverNumbers = new ArrayList<>();
-
-        int nextDriverNumber = getNextDriverNumber(availableDriverNumbers, lastDriverNumber);
-        findHub.updateDriverNumber(nextDriverNumber);
-
-        return nextDriverNumber;
-    }
-
-    // 다음 업체 배송 담당자를 구하는 정책
-    private Integer getNextDriverNumber(List<Integer> availableDriverNumbers, Integer lastDriverNumber) {
-        return availableDriverNumbers.stream()
-                .filter(num -> num > lastDriverNumber)
-                .min(Integer::compareTo)
-                .orElseGet(() -> availableDriverNumbers.stream()
-                        .min(Integer::compareTo)
-                        .orElseThrow(() -> new HubException(HubResponseCode.HUB_DRIVER_NOT_FOUND)));
-    }
-
     // 주문 가능 여부 판단
     private GetHubProductOrderableResponse checkOrderable(HubProduct hubProduct, int requestedQuantity) {
         String message;
