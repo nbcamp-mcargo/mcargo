@@ -41,7 +41,6 @@ public class SlackService {
         // AI 요청
         String aiResponseMessage = predictAiUtils.predictAi(aiRequestMessage);
 
-        System.out.println(email);
         // 이메일로 사용자 조회
         UsersLookupByEmailResponse userResponse = slack.methods(slackToken)
                 .usersLookupByEmail(r -> r.email(email));

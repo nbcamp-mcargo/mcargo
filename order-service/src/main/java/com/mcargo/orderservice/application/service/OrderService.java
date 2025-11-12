@@ -85,7 +85,7 @@ public class OrderService {
         ResDeliveryDto deliveryRes = deliveryClient.createDelivery(deliveryReq);
 
         // 메세지 전송 요청
-        if(slackClient.sendMessage(new AiMessageRequest(
+        if(!slackClient.sendMessage(new AiMessageRequest(
                 deliveryReq.receiverSlackId(),
                         "주문시간: " + order.getCreatedAt() + "\n" +
                         "상품정보: " + pName.toString() + "\n" +
