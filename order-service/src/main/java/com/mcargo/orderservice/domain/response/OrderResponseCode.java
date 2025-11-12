@@ -1,11 +1,12 @@
-package com.mcargo.common.response;
+package com.mcargo.orderservice.domain.response;
 
+import com.mcargo.common.response.ResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
-public enum OrderResponseCode implements ResponseCode{
+public enum OrderResponseCode implements ResponseCode {
 
     //성공
     ORDER_CREATED(HttpStatus.CREATED, "요청하신 주문에 성공했습니다."),
