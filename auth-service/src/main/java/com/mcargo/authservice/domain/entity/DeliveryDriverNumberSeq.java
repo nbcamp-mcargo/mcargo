@@ -1,4 +1,4 @@
-package com.mcargo.deliveryservice.user.domain.model;
+package com.mcargo.authservice.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

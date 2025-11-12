@@ -1,4 +1,4 @@
-package com.mcargo.deliveryservice.user.domain.model;
+package com.mcargo.authservice.domain.entity;
 
 public enum DeliveryDriverType {
     HUB_DRIVER("허브 배송 담당자"),
