@@ -8,6 +8,7 @@ import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.mcargo.companyservice.application.response.CompanyResponseCode.COMPANY_NAME_DUPLICATED;
 import static com.mcargo.companyservice.application.response.CompanyResponseCode.COMPANY_NOT_FOUND;
@@ -18,6 +19,7 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
+    @Transactional
     public Company createCompany(CompanyCreateRequest request) {
 
         if (companyRepository.existsByName(request.name())) {
@@ -27,6 +29,7 @@ public class CompanyService {
         return companyRepository.save(request.toEntity());
     }
 
+    @Transactional(readOnly = true)
     public CompanyReadResponse getCompany(String companyId) {
 
         Company company = companyRepository.findById(companyId)
@@ -35,6 +38,7 @@ public class CompanyService {
         return company.toReadResponse();
     }
 
+    @Transactional
     public void deleteCompany(String companyId, Long userId) {
 
         Company company = companyRepository.findById(companyId)
@@ -43,11 +47,14 @@ public class CompanyService {
         company.delete(userId);
     }
 
+    @Transactional
     public void updateCompany(String companyId, Long userId, CompanyUpdateRequest request) {
 
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
-        company.update(request);
+        company.updateEntity(request);
+
+        company.recordUpdate(userId);
     }
 }

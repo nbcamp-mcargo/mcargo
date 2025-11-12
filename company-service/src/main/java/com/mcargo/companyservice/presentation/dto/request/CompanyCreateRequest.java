@@ -2,13 +2,16 @@ package com.mcargo.companyservice.presentation.dto.request;
 
 import com.mcargo.companyservice.domain.entity.Company;
 import com.mcargo.companyservice.domain.entity.CompanyType;
+import jakarta.validation.constraints.NotBlank;
 
 public record CompanyCreateRequest(
-    String name,
-    CompanyType type,
-    String address,
-    Double latitude,
-    Double longitude
+        @NotBlank
+        String name,
+        @NotBlank
+        CompanyType type,
+        String address,
+        Double latitude,
+        Double longitude
 ) {
     public Company toEntity() {
         return Company.builder()

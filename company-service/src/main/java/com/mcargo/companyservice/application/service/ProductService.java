@@ -10,15 +10,15 @@ import com.mcargo.companyservice.presentation.dto.request.ProductCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.ProductCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.ProductReadResponse;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.mcargo.companyservice.application.response.CompanyResponseCode.COMPANY_NOT_FOUND;
 import static com.mcargo.companyservice.application.response.ProductResponseCode.PRODUCT_NOT_FOUND;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProductService {
 
@@ -26,6 +26,7 @@ public class ProductService {
 
     private final CompanyRepository companyRepository;
 
+    @Transactional
     public ProductCreateResponse createProduct(ProductCreateRequest request) {
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
@@ -35,14 +36,16 @@ public class ProductService {
         return savedProduct.toCreateResponse();
     }
 
+    @Transactional(readOnly = true)
     public ProductReadResponse getProduct(String productId) {
 
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductException(PRODUCT_NOT_FOUND));
 
-        return product.toProductReadResponse(product);
+        return product.toReadResponse(product);
     }
 
+    @Transactional
     public void updateProduct(String productId, Long userId, ProductUpdateRequest request) {
 
         companyRepository.findById(request.companyId())
@@ -56,6 +59,7 @@ public class ProductService {
         product.recordUpdate(userId);
     }
 
+    @Transactional
     public void deleteProduct(String productId, Long userId) {
 
         Product product = productRepository.findById(productId)

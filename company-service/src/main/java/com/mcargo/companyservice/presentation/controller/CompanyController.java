@@ -8,6 +8,8 @@ import com.mcargo.companyservice.presentation.dto.request.CompanyCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.CompanyCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,7 @@ public class CompanyController {
 
     @PostMapping("/company")
     public ApiResponse<CompanyCreateResponse> createCompany(
-            @RequestBody CompanyCreateRequest request) {
+            @Valid @RequestBody CompanyCreateRequest request) {
 
         Company createdCompany = companyService.createCompany(request);
 
@@ -38,8 +40,8 @@ public class CompanyController {
     @PatchMapping("/company/{companyId}")
     public ApiResponse<CompanyReadResponse> updateCompany(
             @PathVariable String companyId,
-            @RequestParam Long userId,
-            @RequestBody CompanyUpdateRequest request) {
+            @NotNull @RequestParam Long userId,
+            @Valid @RequestBody CompanyUpdateRequest request) {
 
         companyService.updateCompany(companyId, userId, request);
 
@@ -49,7 +51,7 @@ public class CompanyController {
     @DeleteMapping("/company/{companyId}")
     public ApiResponse<CompanyReadResponse> deleteCompany(
             @PathVariable String companyId,
-            @RequestParam Long userId) {
+            @NotNull @RequestParam Long userId) {
 
         companyService.deleteCompany(companyId, userId);
 

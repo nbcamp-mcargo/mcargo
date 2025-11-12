@@ -7,6 +7,7 @@ import com.mcargo.companyservice.presentation.dto.request.ProductCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.ProductUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.ProductCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.ProductReadResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class ProductController {
 
     @PostMapping("/product")
     public ApiResponse<ProductCreateResponse> createProduct(
-            @RequestBody ProductCreateRequest request) {
+            @Valid @RequestBody ProductCreateRequest request) {
 
         ProductCreateResponse createdProduct = productService.createProduct(request);
 
@@ -40,7 +41,7 @@ public class ProductController {
     public ApiResponse<ProductResponseCode> updateProduct(
             @PathVariable String productId,
             @RequestParam Long userId,
-            @RequestBody ProductUpdateRequest request) {
+            @Valid @RequestBody ProductUpdateRequest request) {
 
         productService.updateProduct(productId, userId, request);
 

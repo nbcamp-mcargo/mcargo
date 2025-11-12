@@ -46,7 +46,7 @@ public class Product extends BaseEntity {
         this.hubId = hubId;
     }
 
-    public ProductReadResponse toProductReadResponse(Product product) {
+    public ProductReadResponse toReadResponse(Product product) {
         return new ProductReadResponse(
                 this.id,
                 this.name,

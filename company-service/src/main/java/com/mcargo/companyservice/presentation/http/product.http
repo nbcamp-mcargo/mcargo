@@ -1,0 +1,25 @@
+### 상품 생성 /product/{productId} (업체 생성 후 실행)
+## UUID로 생성된 companyId를 JSON 형식에 채운 후 요청
+POST http://localhost:19099:company
+Content-Type: application/json
+
+{
+  "companyId": "cf0af327-93f6-4643-b26d-983f0bb9b578",
+  "name": "맥북 프로 16인치",
+  "price": 3500000,
+  "description": "최신 M3 칩셋을 탑재한 맥북 프로 16인치 모델",
+  "isSale": true,
+  "hubId": "hub-001"
+}
+
+### 상품 수정 /product/{productId}
+## UUID로 생성된 productId를 채운 후 요청
+PUT http://localhost:19099:company/
+
+### 상품 조회 product/{productId{
+## UUID로 생성된 productId를 채운 후 요청
+GET http://localhost:19099:company/
+
+### 상품 삭제 /product/{productId}
+## UUID로 생성된 productId를 채운 후 요청
+DELETE http://localhost:19099:company/
