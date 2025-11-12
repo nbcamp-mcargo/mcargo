@@ -1,6 +1,6 @@
 package com.mcargo.companyservice.presentation.dto.response;
 
-public record CompanyReadResponse (
+public record CompanyCreateResponse (
         String name,
         String companyType,
         String address,

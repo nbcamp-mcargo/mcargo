@@ -1,11 +1,11 @@
 package com.mcargo.companyservice.application.service;
 
 import com.mcargo.companyservice.application.exceptiopn.CompanyException;
-import com.mcargo.companyservice.application.response.CompanyResponseCode;
 import com.mcargo.companyservice.domain.entity.Company;
 import com.mcargo.companyservice.domain.repository.CompanyRepository;
 import com.mcargo.companyservice.presentation.dto.request.CompanyCreateRequest;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
+import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,21 +27,24 @@ public class CompanyService {
         return companyRepository.save(request.toEntity());
     }
 
-    public Company getCompany(String companyId) {
+    public CompanyReadResponse getCompany(String companyId) {
 
-        return companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
-    }
-
-    public void deleteCompany(String companyId) {
-
-        companyRepository.findById(companyId)
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 
-        companyRepository.deleteById(companyId);
+        return company.toReadResponse();
     }
 
-    public void updateCompany(String companyId, CompanyUpdateRequest request) {
+    public void deleteCompany(String companyId, Long userId) {
+
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
+
+        company.delete(userId);
+    }
+
+    public void updateCompany(String companyId, Long userId, CompanyUpdateRequest request) {
+
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException(COMPANY_NOT_FOUND));
 

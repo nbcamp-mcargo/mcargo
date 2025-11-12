@@ -1,6 +1,6 @@
 package com.mcargo.companyservice.domain.entity;
 
-import com.mcargo.companyservice.presentation.dto.request.CompanyCreateRequest;
+import com.mcargo.common.entity.BaseEntity;
 import com.mcargo.companyservice.presentation.dto.request.CompanyUpdateRequest;
 import com.mcargo.companyservice.presentation.dto.response.CompanyCreateResponse;
 import com.mcargo.companyservice.presentation.dto.response.CompanyReadResponse;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_company")
-public class Company {
+public class Company extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

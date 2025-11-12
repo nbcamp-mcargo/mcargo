@@ -10,8 +10,6 @@ public interface CompanyRepository {
 
     Optional<Company> findById(String companyId);
 
-    void deleteById(String companyId);
-
     boolean existsById(String companyId);
 
     boolean existsByName(String name);

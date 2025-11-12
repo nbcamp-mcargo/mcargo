@@ -29,29 +29,29 @@ public class CompanyController {
     }
 
     @GetMapping("/company/{companyId}")
-    public ApiResponse<CompanyReadResponse> getCompany(
+    public CompanyReadResponse getCompany(
             @PathVariable String companyId) {
 
-        Company company = companyService.getCompany(companyId);
-
-        return ApiResponse.of(COMPANY_READ_SUCCESS, company.toReadResponse());
+        return companyService.getCompany(companyId);
     }
 
     @PatchMapping("/company/{companyId}")
     public ApiResponse<CompanyReadResponse> updateCompany(
             @PathVariable String companyId,
-            @RequestBody CompanyUpdateRequest request
-    ) {
-        companyService.updateCompany(companyId, request);
+            @RequestParam Long userId,
+            @RequestBody CompanyUpdateRequest request) {
+
+        companyService.updateCompany(companyId, userId, request);
 
         return ApiResponse.of(COMPANY_UPDATE_SUCCESS);
     }
 
     @DeleteMapping("/company/{companyId}")
     public ApiResponse<CompanyReadResponse> deleteCompany(
-            @PathVariable String companyId) {
+            @PathVariable String companyId,
+            @RequestParam Long userId) {
 
-        companyService.deleteCompany(companyId);
+        companyService.deleteCompany(companyId, userId);
 
         return ApiResponse.of(CompanyResponseCode.COMPANY_DELETE_SUCCESS);
     }
