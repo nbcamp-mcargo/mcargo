@@ -1,0 +1,18 @@
+dependencies {
+    implementation 'com.slack.api:slack-api-client:1.7.0' // slack api
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // 유레카 클라이언트
+    implementation 'org.springframework.boot:spring-boot-starter-web' // 스프링 웹
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // feign
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa
+    implementation 'com.google.genai:google-genai:1.26.0' // 제미나이
+    runtimeOnly 'org.postgresql:postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation project(':common') // 공통 모듈
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.2"
+    }
+}
