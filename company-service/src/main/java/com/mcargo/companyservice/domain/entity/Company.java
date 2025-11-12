@@ -40,22 +40,11 @@ public class Company extends BaseEntity {
         this.type = type;
     }
 
-    public void update(CompanyUpdateRequest request) {
-        if (request.name() != null) {
-            this.name = request.name();
-        }
-
-        if (request.address() != null) {
-            this.address = request.address();
-        }
-
-        if (request.latitude() != null) {
-            this.latitude = request.latitude();
-        }
-
-        if (request.longitude() != null) {
-            this.longitude = request.longitude();
-        }
+    public void updateEntity(CompanyUpdateRequest request) {
+        this.name = request.name();
+        this.address = request.address();
+        this.latitude = request.latitude();
+        this.longitude = request.longitude();
     }
 
     public CompanyReadResponse toReadResponse() {
