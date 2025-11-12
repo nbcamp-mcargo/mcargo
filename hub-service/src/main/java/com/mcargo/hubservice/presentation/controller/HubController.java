@@ -83,7 +83,7 @@ public class HubController {
     // ㅡㅡ허브상품 관련ㅡㅡ
     // 허브상품 추가
     @PostMapping("/Products")
-    public ApiResponse<Void> addHubProduct(@Valid @RequestBody addHubProductRequest request) {
+    public ApiResponse<Void> addHubProduct(@Valid @RequestBody AddHubProductRequest request) {
         hubService.addHubProduct(request);
         return ApiResponse.of(HubResponseCode.HUB_PRODUCT_CREATED);
     }
