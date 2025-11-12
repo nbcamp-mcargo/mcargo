@@ -1,0 +1,11 @@
+### 회원 생성
+POST http://localhost:19091/auths/signUp
+Content-Type: application/json
+
+{
+  "username": "manager1",
+  "nickname": "mgr1",
+  "email": "mgr1@email.com",
+  "password": "Hash123!",
+  "role": "MASTER"
+}

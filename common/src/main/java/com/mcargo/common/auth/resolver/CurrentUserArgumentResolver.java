@@ -1,10 +1,10 @@
 package com.mcargo.common.auth.resolver;
 
-import com.mcargo.common.auth.annotation.CurrentUser;
-import com.mcargo.common.exception.UserException;
-import com.mcargo.common.response.UserResponseCode;
-import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletRequest;
+import com.mcargo.common.auth.context.UserContext;
+import com.mcargo.common.auth.context.UserContextHolder;
+import com.mcargo.common.auth.context.annotation.CurrentUser;
+import com.mcargo.common.exception.AuthException;
+import com.mcargo.common.response.AuthResponseCode;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -15,8 +15,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    public static final String HEADER_USER_ID = "X-User-Id";
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentUser.class)
@@ -26,23 +24,13 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(
         MethodParameter parameter,
-        @Nullable ModelAndViewContainer mavContainer,
+        ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest,
-        @Nullable WebDataBinderFactory binderFactory) throws Exception {
-        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        if (request == null) {
-            throw new UserException(UserResponseCode.NO_REQUEST_AVAILABLE);
+        WebDataBinderFactory binderFactory) throws Exception {
+        UserContext userContext = UserContextHolder.get();
+        if (userContext == null) {
+            throw new AuthException(AuthResponseCode.LOGIN_NEEDED);
         }
-        String userIdHeader = request.getHeader(HEADER_USER_ID);
-        if (userIdHeader == null || userIdHeader.isBlank()) {
-            // 선택: 인증이 필수라면 401(Unauthorized)
-            throw new UserException(UserResponseCode.MISSING_USER_ID);
-        }
-        try {
-            return Long.parseLong(userIdHeader);
-        } catch (NumberFormatException e) {
-            throw new UserException(UserResponseCode.INVALID_USER_ID);
-        }
+        return userContext.getUserId();
     }
-
 }

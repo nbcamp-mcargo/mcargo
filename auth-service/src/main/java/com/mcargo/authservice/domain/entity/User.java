@@ -2,17 +2,12 @@ package com.mcargo.authservice.domain.entity;
 
 import com.mcargo.common.auth.UserRole;
 import com.mcargo.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "p_user")
@@ -44,16 +39,37 @@ public class User extends BaseEntity {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserStatus status;
+
     // 정적 메서드로 User 생성
     public static User createUser(String username, String nickname,
-        String email, String password, UserRole role) {
+                                  String email, String password, UserRole role) {
         User user = new User();
         user.username = username;
         user.nickname = nickname;
         user.email = email;
         user.password = password;
         user.role = role;
+
+        // MASTER, HUB_MANAGER 는 바로 APPROVED, 나머지는 PENDING
+        if (role == UserRole.MASTER || role == UserRole.HUB_MANAGER) {
+            user.status = UserStatus.APPROVED;
+        } else {
+            user.status = UserStatus.PENDING;
+        }
         return user;
+    }
+
+    public void updateStatus(UserStatus status, Long apporvedBy) {
+        this.status = status;
+        this.createdBy = apporvedBy;
+    }
+
+    public void delete(Long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
     }
 
     /**

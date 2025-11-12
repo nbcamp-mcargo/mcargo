@@ -3,21 +3,23 @@ package com.mcargo.authservice.application.service;
 import com.mcargo.authservice.JwtUtil;
 import com.mcargo.authservice.domain.entity.RefreshToken;
 import com.mcargo.authservice.domain.entity.User;
+import com.mcargo.authservice.domain.entity.UserStatus;
+import com.mcargo.authservice.domain.exception.UserException;
 import com.mcargo.authservice.domain.repository.RefreshTokenRepository;
 import com.mcargo.authservice.domain.repository.UserRepository;
+import com.mcargo.authservice.domain.response.UserResponseCode;
+import com.mcargo.authservice.presentation.dto.request.UserDeleteRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserLoginRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserSignUpRequestDto;
-import com.mcargo.authservice.presentation.dto.response.UserInformationDto;
-import com.mcargo.authservice.presentation.dto.response.UserLoginResponseDto;
-import com.mcargo.authservice.presentation.dto.response.UserSignUpResponseDto;
-import com.mcargo.common.exception.UserException;
-import com.mcargo.common.response.UserResponseCode;
+import com.mcargo.authservice.presentation.dto.response.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +44,28 @@ public class UserService {
             requestDto.role()
         );
         userRepository.save(user);
-        System.out.println("user.getUsername() = " + user.getUsername());
-        System.out.println("user.getNickname() = " + user.getNickname());
-        System.out.println("user.getEmail() = " + user.getEmail());
         return new UserSignUpResponseDto(
             user.getUsername(),
             user.getNickname(),
-            user.getEmail()
+            user.getEmail(),
+            user.getStatus()
+        );
+    }
+
+    // MASTER나 HUB_MANAGER 승인
+    @Transactional
+    public UserSignUpResponseDto approveUser(Long userId, Long approverId) {
+        User user = userRepository.findActiveById(userId)
+            .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
+        user.updateStatus(UserStatus.APPROVED, approverId);
+
+        userRepository.save(user);
+        System.out.println("user.getStatus() = " + user.getStatus());
+        return new UserSignUpResponseDto(
+            user.getUsername(),
+            user.getNickname(),
+            user.getEmail(),
+            user.getStatus()
         );
     }
 
@@ -70,6 +87,12 @@ public class UserService {
         // 1 이메일로 사용자 조회(탈퇴하지 않은 사용자만)
         User user = userRepository.findActiveByEmail(requestDto.email())
             .orElseThrow(() -> new UserException(UserResponseCode.INVALID_LOGIN_CREDENTIALS));
+        // 2 사용자 상태 검증 (APPROVED 상태만 로그인 허용)
+        if (user.getStatus() != UserStatus.APPROVED) {
+
+        }
+
+
         // 2 비밀번호 검증
         if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
             throw new UserException(UserResponseCode.INVALID_LOGIN_CREDENTIALS);
@@ -87,28 +110,53 @@ public class UserService {
         RefreshToken refreshTokenEntity = new RefreshToken(refreshToken, user, expiresAt);
         refreshTokenRepository.save(refreshTokenEntity);
         UserInformationDto userInfo = new UserInformationDto(
-            user.getUsername(), user.getNickname(), user.getEmail(), user.getRole());
+            user.getUsername(), user.getNickname(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt());
         return new UserLoginResponseDto(
             accessToken, refreshToken, jwtUtil.getAccessTokenExpiration(), userInfo);
     }
 
-//    // 로그아웃
-//    @Transactional
-//    public LogoutResponseDto logout(Long userId) {
-//        // 1 사용자 조회
-//        User user = userRepository.findActiveById(userId)
-//            .orElseThrow(() -> null);
-//        System.out.println("user = " + user);
-//        System.out.println("user.getUsername() = " + user.getUsername());
-//        System.out.println("user.getEmail() = " + user.getEmail());
-//        // 2 해당 사용자의 모든 리프레시 토큰 삭제 (토큰 무효화)
-//        if (user != null) {
-//            refreshTokenRepository.deleteByUser(user);
-//        }
-//        // 3 성공 응답 반환
-//        return new LogoutResponseDto("로그아웃 되었습니다.",
-//            LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-//    }
+    // 로그아웃
+    @Transactional
+    public LogoutResponseDto logout(Long userId) {
+        // 1 사용자 조회
+        User user = userRepository.findActiveById(userId)
+            .orElseThrow(() -> null);
+        System.out.println("user = " + user);
+        System.out.println("user.getUsername() = " + user.getUsername());
+        System.out.println("user.getEmail() = " + user.getEmail());
+        // 2 해당 사용자의 모든 리프레시 토큰 삭제 (토큰 무효화)
+        if (user != null) {
+            refreshTokenRepository.deleteByUser(user);
+        }
+        // 3 성공 응답 반환
+        return new LogoutResponseDto("로그아웃 되었습니다.",
+            LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+    }
 
+    // 회원탈퇴
+    public UserDeleteResponseDto deleteUser(Long userId,
+                                            @Valid UserDeleteRequestDto requestDto) {
+        // 1 사용자 조회
+        User user = userRepository.findActiveById(userId)
+            .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
+        // 2 비밀번호 확인
+        if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
+            throw new UserException(UserResponseCode.PASSWORD_MISMATCH);
+        }
+        // 3 소프트 삭제 처리
+        user.delete(userId);
+        // 4 관련 토큰 무효하
+        if (user != null) {
+            refreshTokenRepository.deleteByUser(user);
+        }
+        // 5 변경사항 저장
+        User deleteUser = userRepository.save(user);
+        // 6 응답 Dto 생성
+        return new UserDeleteResponseDto(
+            "회원 탈퇴 완료되었습니다.",
+            deleteUser.getDeletedAt(),
+            deleteUser.getUsername()
+        );
 
+    }
 }

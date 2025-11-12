@@ -35,6 +35,8 @@ spring:
             - Path=/auths/**
           filters:
             - StripPrefix=0
+      default-filters:
+        - PreserveHostHeader
     discovery:
       locator:
         enabled: true
