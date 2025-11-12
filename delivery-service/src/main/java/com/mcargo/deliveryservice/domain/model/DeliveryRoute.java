@@ -21,29 +21,29 @@ public class DeliveryRoute extends BaseEntity {
     @Column(name="delivery_route_id", updatable = false, nullable = false)
     private UUID deliveryRouteId;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private int sequence;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private UUID fromHubId;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private UUID toHubId;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private DeliveryRouteStatusEnum deliveryRouteStatus;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Long predictedDistance;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Long predictedTime;
 
     private Long actualDistance;
 
     private LocalDateTime actualTime;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private UUID deliveryDriverId;
 
     @Column(name = "delivery_id", insertable = false, updatable = false)

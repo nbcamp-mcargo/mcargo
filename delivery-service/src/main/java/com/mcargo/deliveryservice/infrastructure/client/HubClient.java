@@ -15,5 +15,5 @@ import java.util.List;
 public interface HubClient {
 
     @PostMapping("/hub-routes/navigation")
-    ApiResponse<List<HubRouteInfo>> getHubRoutes(@RequestBody NavigateHubRouteRequest request);
+    List<HubRouteInfo> getHubRoutes(@RequestBody NavigateHubRouteRequest request);
 }

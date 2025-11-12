@@ -36,10 +36,10 @@ public class SlackService {
     // AI 요청 -> 슬랙 메시지 송신
     // 슬랙 프로세스 : 이메일 -> 유저ID -> DM채널 -> 메시지 송신
     @Transactional
-    public void sendMessage(String email, String aiRequestMessage) throws IOException, SlackApiException {
+    public Boolean sendMessage(String email, String aiRequestMessage) throws IOException, SlackApiException {
 
-        // AI 요청 TODO
-        String aiResponseMessage = predictAiUtils.predictAi(email);
+        // AI 요청
+        String aiResponseMessage = predictAiUtils.predictAi(aiRequestMessage);
 
         // 이메일로 사용자 조회
         UsersLookupByEmailResponse userResponse = slack.methods(slackToken)
@@ -82,6 +82,7 @@ public class SlackService {
             log.info(messageResponse.getError());
             throw new SlackException(SlackResponseCode.SLACK_FAIL);
         }
+        return true;
     }
 
 }

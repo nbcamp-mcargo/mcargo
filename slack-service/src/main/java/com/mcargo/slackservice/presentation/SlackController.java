@@ -19,11 +19,10 @@ public class SlackController {
     private final SlackService slackService;
 
     @PostMapping("/slack/send")
-    public ApiResponse<Void> sendMessage(
+    public Boolean sendMessage(
             @RequestBody AiMessageRequest request) throws SlackApiException, IOException {
 
-        slackService.sendMessage(request.userEmail(), request.aiRequestMessage());
-        return ApiResponse.of(SlackResponseCode.SLACK_OK);
+        return slackService.sendMessage(request.userEmail(), request.aiRequestMessage());
     }
 
 }

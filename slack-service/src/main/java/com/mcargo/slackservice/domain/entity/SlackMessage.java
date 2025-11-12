@@ -25,8 +25,10 @@ public class SlackMessage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MessageState messageState; // 송신 성공, 실패 여부
 
-    private  String aiRequestMessage; // ai에 요청할 메시지
+    @Column(columnDefinition = "TEXT")
+    private String aiRequestMessage; // ai에 요청할 메시지
 
+    @Column(columnDefinition = "TEXT")
     private String aiResponseMessage; // ai응답을 저장할 메시지
 
     // 메시지 엔티티 생성

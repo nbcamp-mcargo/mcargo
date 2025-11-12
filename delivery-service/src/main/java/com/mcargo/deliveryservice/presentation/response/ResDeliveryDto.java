@@ -13,7 +13,7 @@ import java.util.UUID;
 public record ResDeliveryDto (
         UUID deliveryId,
         UUID orderId,
-        DeliveryStatusEnum deliveryStatus,
+//        DeliveryStatusEnum deliveryStatus,
         String address,
         Long receiverUserId,
         String receiverSlackId,

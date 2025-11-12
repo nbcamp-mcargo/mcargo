@@ -28,15 +28,11 @@ public class HubRouteController {
         return ApiResponse.of(HubResponseCode.Hub_ROUTE_CREATED);
     }
 
-    // 허브경로 검색
-    //TODO 추가 해야 함
-
     // 허브 경로 안내
     @PostMapping("/navigation")
-    public ApiResponse<List<NavigateHubRouteResponse>> navigateHubRoute(
+    public List<NavigateHubRouteResponse> navigateHubRoute(
             @Valid @RequestBody NavigateHubRouteRequest request) {
-        List<NavigateHubRouteResponse> response = hubRouteService.navigateHubRoute(request);
-        return ApiResponse.of(HubResponseCode.HUB_OK, response);
+        return hubRouteService.navigateHubRoute(request);
     }
 
 

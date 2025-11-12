@@ -109,9 +109,9 @@ public class HubController {
         return ApiResponse.of(HubResponseCode.HUB_OK);
     }
 
-    // 허브상품 상세 조회
-    @GetMapping("/products/{hubProductId}")
-    public ApiResponse<GetHubProductDetailsResponse> getHubProductDetails(@PathVariable("hubProductId") UUID hubProductId) {
+    // 허브상품 상세 조회 -> 급해서 업체쪽 dto 그냥 가져옴
+    @GetMapping("/products/{hubProductId}") // 응답 dto 아쉽
+    public ApiResponse<ProductReadResponse> getHubProductDetails(@PathVariable("hubProductId") UUID hubProductId) {
         return ApiResponse.of(HubResponseCode.HUB_OK, hubService.getHubProductDetails(hubProductId));
     }
 
@@ -128,8 +128,9 @@ public class HubController {
 
 
     // 허브상품 주문 가능 여부 확인. 내부호출용도
-    @PostMapping("/product/orderable")
-    public List<GetHubProductOrderableResponse> getHubProductOrderable(@Valid @RequestBody List<GetHubProductOrderableRequest> request) {
+    @PostMapping("/products/orderable")
+    public List<GetHubProductOrderableResponse> getHubProductOrderable(
+            @RequestBody List<GetHubProductOrderableRequest> request) {
         return hubService.getHubProductOrderable(request);
     }
 

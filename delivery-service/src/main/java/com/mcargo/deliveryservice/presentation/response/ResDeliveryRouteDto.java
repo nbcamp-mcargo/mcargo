@@ -14,7 +14,7 @@ public record ResDeliveryRouteDto (
         Integer sequence,
         UUID fromHubId,
         UUID toHubId,
-        DeliveryRouteStatusEnum deliveryRouteStatus,
+//        DeliveryRouteStatusEnum deliveryRouteStatus,
         Long predictedDistance,
         Long predictedTime,
         UUID deliveryDriverId,

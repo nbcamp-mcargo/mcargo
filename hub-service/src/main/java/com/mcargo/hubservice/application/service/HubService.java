@@ -1,7 +1,6 @@
 package com.mcargo.hubservice.application.service;
 
 import com.mcargo.hubservice.application.port.CompanyPort;
-import com.mcargo.hubservice.application.port.UserPort;
 import com.mcargo.hubservice.domain.entity.HubProductStatus;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +24,6 @@ public class HubService {
 
     private final HubRepository hubRepository;
     private final CompanyPort companyPort;
-    private final UserPort userPort;
 
     //ㅡㅡ 허브 관련 ㅡㅡ
     // 허브 생성
@@ -42,7 +39,6 @@ public class HubService {
         hubRepository.save(newHub);
     }
 
-
     // 허브 수정
     @Transactional
     public void updateHub(UUID hubId, UpdateHubRequest request) {
@@ -56,7 +52,6 @@ public class HubService {
                 request.longitude(),
                 request.lastDriverNumber()
         );
-
     }
 
     // 허브 삭제
@@ -148,18 +143,13 @@ public class HubService {
         findHubProduct.delete(userId);
     }
 
-
-    // 허브상품 상세조회
+    // 허브상품 상세조회 -> 응답dto 급하게 업체에서 쓰던거 가져옴
     @Transactional(readOnly = true)
-    public GetHubProductDetailsResponse getHubProductDetails(UUID hubProductId) {
+    public ProductReadResponse getHubProductDetails(UUID hubProductId) {
         HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(hubProductId).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
 
-        //TODO 상품 상세정보 api 구현되면 적용
-        //companyClient
-
-        return null;
-
+        return companyPort.getProduct(findHubProduct.getProductId());
     }
 
     // 허브상품 검색. 소속 허브로. 상품의 대한 정보는 없음(id값만)
@@ -183,7 +173,6 @@ public class HubService {
                 orderedItem -> {
                     HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(orderedItem.hubProductId()).orElseThrow(
                             () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
-
                     return checkOrderable(findHubProduct, orderedItem.quantity());
                 }).toList();
     }
@@ -194,37 +183,7 @@ public class HubService {
 
 
 
-
-
-
-
     // ㅡㅡ protected, private ㅡㅡ
-    // 업체 배송 담당자 배정. 허브 경로에서 사용
-    @Transactional
-    protected Integer assignDriver(UUID hubId) {
-        Hub findHub = hubRepository.findById(hubId)
-                .orElseThrow(() -> new HubException(HubResponseCode.HUB_NOT_FOUND));
-        int lastDriverNumber = findHub.getLastDriverNumber();
-
-        //TODO 요청으로 해당 허브 소속의 업체배송 가능한 배송번호리스트 필요
-        List<Integer> availableDriverNumbers = new ArrayList<>();
-
-        int nextDriverNumber = getNextDriverNumber(availableDriverNumbers, lastDriverNumber);
-        findHub.updateDriverNumber(nextDriverNumber);
-
-        return nextDriverNumber;
-    }
-
-    // 다음 업체 배송 담당자를 구하는 정책
-    private Integer getNextDriverNumber(List<Integer> availableDriverNumbers, Integer lastDriverNumber) {
-        return availableDriverNumbers.stream()
-                .filter(num -> num > lastDriverNumber)
-                .min(Integer::compareTo)
-                .orElseGet(() -> availableDriverNumbers.stream()
-                        .min(Integer::compareTo)
-                        .orElseThrow(() -> new HubException(HubResponseCode.HUB_DRIVER_NOT_FOUND)));
-    }
-
     // 주문 가능 여부 판단
     private GetHubProductOrderableResponse checkOrderable(HubProduct hubProduct, int requestedQuantity) {
         String message;
