@@ -52,6 +52,6 @@ public class CompanyController {
 
         companyService.deleteCompany(companyId);
 
-        return ApiResponse.of(COMPN)
+        return ApiResponse.of(CompanyResponseCode.COMPANY_DELETE_SUCCESS);
     }
 }
