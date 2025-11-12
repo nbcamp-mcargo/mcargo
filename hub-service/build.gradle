@@ -1,12 +1,14 @@
 dependencies {
-    implementation 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql' // postgres
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // 리액트 카카오맵 api에 사용
+    implementation 'org.projectlombok:lombok' // 롬복 컴파일 시
+    annotationProcessor 'org.projectlombok:lombok'// 롬복 코드 생성
+    runtimeOnly 'org.postgresql:postgresql'   // 포스트그레스
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa
-
-	implementation project(':common') // 공통 모듈
-	implementation 'org.springframework.boot:spring-boot-starter-web' // 스프링 웹
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client' // 유레카 클라이언트
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign' // 페인 클라이언트
+    implementation 'org.springframework.boot:spring-boot-starter-web' // 스프링 웹
+    implementation project(':common') // 공통 모듈
 }
 
 dependencyManagement {
