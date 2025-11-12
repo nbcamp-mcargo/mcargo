@@ -20,7 +20,7 @@ public class OrderController {
 
     private OrderService orderService;
 
-    // 주문 생성은 업체 담당자만 가능
+    // 주문 생성은 업체 담당자만 가능. 주문가능 한 상품인지 허브로 확인 요청
     @PostMapping
     public ApiResponse<Void> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         orderService.createOrder(request);

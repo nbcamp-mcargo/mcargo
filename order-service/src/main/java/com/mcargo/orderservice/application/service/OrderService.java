@@ -38,7 +38,7 @@ public class OrderService {
         );
 
         List<OrderProduct> orderProducts = request.orderProducts().stream()
-                .map(p -> OrderProduct.create(p.hub_product_id(), p.quantity()))
+                .map(p -> OrderProduct.create(p.hubProductId(), p.quantity()))
                 .collect(Collectors.toList());
 
         newOrder.getOrderProducts().addAll(orderProducts);
