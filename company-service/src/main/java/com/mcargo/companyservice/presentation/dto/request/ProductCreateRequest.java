@@ -14,6 +14,7 @@ public record ProductCreateRequest(
     public Product toEntity(Company company) {
         return Product.builder()
                 .company(company)
+                .name(this.name)
                 .price(this.price)
                 .description(this.description)
                 .isSale(this.isSale)
