@@ -1,5 +1,5 @@
 ### 배송 생성
-POST http://localhost:19097/deliverys
+POST http://localhost:19097/deliveries
 Content-Type: application/json
 
 {

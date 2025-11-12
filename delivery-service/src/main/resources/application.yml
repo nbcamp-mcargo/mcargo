@@ -1,6 +1,9 @@
 spring:
   application:
     name: delivery-service
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     url: ${DELIVERY_DB_URL}
     username: ${DELIVERY_DB_USERNAME}
