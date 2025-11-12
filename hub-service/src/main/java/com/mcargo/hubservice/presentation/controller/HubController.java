@@ -109,9 +109,9 @@ public class HubController {
         return ApiResponse.of(HubResponseCode.HUB_OK);
     }
 
-    // 허브상품 상세 조회
-    @GetMapping("/products/{hubProductId}")
-    public ApiResponse<GetHubProductDetailsResponse> getHubProductDetails(@PathVariable("hubProductId") UUID hubProductId) {
+    // 허브상품 상세 조회 -> 급해서 업체쪽 dto 그냥 가져옴
+    @GetMapping("/products/{hubProductId}") // 응답 dto 아쉽
+    public ApiResponse<ProductReadResponse> getHubProductDetails(@PathVariable("hubProductId") UUID hubProductId) {
         return ApiResponse.of(HubResponseCode.HUB_OK, hubService.getHubProductDetails(hubProductId));
     }
 

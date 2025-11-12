@@ -56,7 +56,6 @@ public class HubService {
                 request.longitude(),
                 request.lastDriverNumber()
         );
-
     }
 
     // 허브 삭제
@@ -148,18 +147,13 @@ public class HubService {
         findHubProduct.delete(userId);
     }
 
-
-    // 허브상품 상세조회
+    // 허브상품 상세조회 -> 응답dto 급하게 업체에서 쓰던거 가져옴
     @Transactional(readOnly = true)
-    public GetHubProductDetailsResponse getHubProductDetails(UUID hubProductId) {
+    public ProductReadResponse getHubProductDetails(UUID hubProductId) {
         HubProduct findHubProduct = hubRepository.findHubProductByHubProductId(hubProductId).orElseThrow(
                 () -> new HubException(HubResponseCode.HUB_PRODUCT_NOT_FOUND));
 
-        //TODO 상품 상세정보 api 구현되면 적용
-        //companyClient
-
-        return null;
-
+        return companyPort.getProduct(findHubProduct.getProductId());
     }
 
     // 허브상품 검색. 소속 허브로. 상품의 대한 정보는 없음(id값만)

@@ -1,0 +1,18 @@
+### 허브 생성
+POST http://localhost:19094/hubs
+Content-Type: application/json
+
+{
+    "name": "부산광역시 센터22",
+    "address": "부산 동구 중앙대로 206",
+    "latitude": 35.1315,
+    "longitude": 129.0368
+}
+
+### 허브 경로 생성
+POST http://localhost:19094/hub-routes
+
+### 허브상품 상세조회
+GET http://localhost:19094/hubs/products/1b9b4394-a7c3-4016-b5ed-d641fe7f9b7e
+
+### 업체 정보 조회

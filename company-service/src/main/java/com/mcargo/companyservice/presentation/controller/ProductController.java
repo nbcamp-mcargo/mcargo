@@ -28,13 +28,14 @@ public class ProductController {
         return ApiResponse.of(PRODUCT_CREATE_SUCCESS);
     }
 
+    // 내부호출용, gateway로 오는 요청은 별도로 구현 필요
     @GetMapping("/product/{productId}")
-    public ApiResponse<ProductReadResponse> getProduct(
+    public ProductReadResponse getProduct(
             @PathVariable String productId) {
 
         ProductReadResponse response = productService.getProduct(productId);
 
-        return ApiResponse.of(PRODUCT_READ_SUCCESS, response);
+        return response;
     }
 
     @PatchMapping("/product/{productId}")

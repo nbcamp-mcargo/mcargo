@@ -1,8 +1,8 @@
 spring:
   application:
-    name: supply-company-service
+    name: company-service
   config:
-    import: optional:file:.env[.properties]
+    import: optional:file:.env-company[.properties]
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${COMPANY_SERVICE_URL}
