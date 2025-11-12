@@ -31,11 +31,31 @@ public class Company extends BaseEntity {
 
     private Double longitude;
 
+    @Builder(access = AccessLevel.PUBLIC)
+    private Company(String name, String address, Double latitude, Double longitude, CompanyType type) {
+        this.name = name;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.type = type;
+    }
+
     public void update(CompanyUpdateRequest request) {
-        this.name = request.name();
-        this.address = request.address();
-        this.latitude = request.latitude();
-        this.longitude = request.longitude();
+        if (request.name() != null) {
+            this.name = request.name();
+        }
+
+        if (request.address() != null) {
+            this.address = request.address();
+        }
+
+        if (request.latitude() != null) {
+            this.latitude = request.latitude();
+        }
+
+        if (request.longitude() != null) {
+            this.longitude = request.longitude();
+        }
     }
 
     public CompanyReadResponse toReadResponse() {
