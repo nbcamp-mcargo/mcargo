@@ -20,8 +20,8 @@ public class KakaoMapApi implements PredictDistanceAndDuration {
 
     // 허브 이동 간 예상 대기 시간
     public GetDistanceAndDurationResponse getDistanceAndDuration(Hub fromHub, Hub toHub) {
-        int distance;
-        int duration;
+        long distance;
+        long duration;
 
         String jsonString = getRoute(transformHubToRoutingData(fromHub), transformHubToRoutingData(toHub));
         ObjectMapper mapper = new ObjectMapper();
@@ -44,8 +44,8 @@ public class KakaoMapApi implements PredictDistanceAndDuration {
         }
 
         return new GetDistanceAndDurationResponse(
-                distanceText(distance),
-                durationText(duration)
+                distance,
+                duration
         );
     }
     // TODO 컴퍼니 들어가도 작동하도록
@@ -82,35 +82,6 @@ public class KakaoMapApi implements PredictDistanceAndDuration {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-    }
-
-
-    // 예상 거리 보기 쉽게
-    private String distanceText(int distance) {
-        String returnText;
-
-        if (distance >= 1000) {
-            returnText = String.format("%.1f km", distance / 1000.0);
-        } else {
-            returnText = distance + " m";
-        }
-
-        return returnText;
-    }
-
-    // 예상 시간 보기 쉽게
-    private String durationText(int duration) {
-        String returnText;
-
-        if (duration >= 3600) {
-            returnText = String.format("%d시간 %d분", duration / 3600, (duration % 3600) / 60);
-        } else if (duration >= 60) {
-            returnText = String.format("%d분", duration / 60);
-        } else {
-            returnText = duration + "초";
-        }
-
-        return returnText;
     }
 
 }

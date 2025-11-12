@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class HubRouteService {
         // 출발 허브와 도착허브가 같지 않다면, 허브에서 바로 업체배송이 아닌 경우
         if (!request.fromHubId().equals(request.toHubId())) {
 
-            int hubDriverNumber = 1; //TODO 허브배송담당자 배정
+            UUID hubDriverId = UUID.randomUUID(); //TODO 허브배송담당자 배정
 
             HubRoute findHubRoute = hubRouteRepository.findByFromHubIdAndToHubId(request.fromHubId(), request.toHubId());
 
@@ -66,39 +67,35 @@ public class HubRouteService {
                         res.add(new NavigateHubRouteResponse(
                                 seq.getSequence(),
 
-                                seqFromHub.getName(),
-                                seqToHub.getName(),
-                                seqFromHub.getAddress(),
-                                seqToHub.getAddress(),
+                                seqFromHub.getId(),
+                                seqToHub.getId(),
 
-                                hubDriverNumber,
-                                hubPredictData.distanceText(),
-                                hubPredictData.durationText()
+                                hubDriverId,
+                                hubPredictData.distance(),
+                                hubPredictData.duration()
                         ));
                     });
 
         }
 
-        // 업체 배송
+        // 업체 배송은 따로 계산
         Hub fromHub = hubService.getHubAsHub(request.toHubId());
 //        Company toCompany =  TODO 컴퍼니 정보 요청
-
+        // 컴퍼니로 교체 예정
         Hub toHub = hubService.getHubAsHub(request.fromHubId());
 
-        // 예상 시간, 거리 계산
+        // 예상 시간, 거리 계산                                                                                    컴퍼니로 교체 예정
         GetDistanceAndDurationResponse companyPredictData = predictDistanceAndDuration.getDistanceAndDuration(fromHub, toHub);
 
         res.add(new NavigateHubRouteResponse(
                 sequence,
 
-                fromHub.getName(),
-                toHub.getName(),        //TODO 컴퍼니로
-                fromHub.getAddress(),
-                toHub.getAddress(),     //TODO
+                fromHub.getId(),
+                UUID.randomUUID(),        // 컴퍼니로
 
-                2, //TODO 업체 배송담당자 배정
-                companyPredictData.distanceText(),
-                companyPredictData.durationText()
+                UUID.randomUUID(), //TODO 업체 배송담당자 배정
+                companyPredictData.distance(),
+                companyPredictData.duration()
         ));
 
         return res;
