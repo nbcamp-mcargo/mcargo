@@ -47,8 +47,7 @@ public class DeliveryDriverService {
         deliveryDriverJpaRepository.save(driver);
     }
 
-    public UUID getNextDriver(UUID hubId, DeliveryDriverType deliveryDriverType) {
-        UUID driverId = null;
+    public UUID getNextDriver(UUID hubId) {
         DeliveryDriver driver = null;
 
         if (hubId == null) { // 허브 드라이버 가져옴

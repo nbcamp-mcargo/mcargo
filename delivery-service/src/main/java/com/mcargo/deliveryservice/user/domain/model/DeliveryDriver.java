@@ -19,6 +19,7 @@ public class DeliveryDriver extends BaseEntity {
     private Long userId;
 
     private UUID hubId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DeliveryDriverType deliveryDriverType;
