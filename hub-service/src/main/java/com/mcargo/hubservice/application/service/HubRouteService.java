@@ -2,11 +2,15 @@ package com.mcargo.hubservice.application.service;
 
 import com.mcargo.hubservice.application.dto.GetDistanceAndDurationResponse;
 import com.mcargo.hubservice.application.dto.RouteCreatorsResponse;
+import com.mcargo.hubservice.application.port.CompanyPort;
+import com.mcargo.hubservice.application.port.AuthPort;
 import com.mcargo.hubservice.application.util.PredictDistanceAndDuration;
 import com.mcargo.hubservice.application.util.RouteCreator;
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubRoute;
 import com.mcargo.hubservice.domain.repository.HubRouteRepository;
+import com.mcargo.hubservice.infrastructure.client.AuthClient;
+import com.mcargo.hubservice.presentation.dto.CompanyReadResponse;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteRequest;
 import com.mcargo.hubservice.presentation.dto.NavigateHubRouteResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,10 @@ public class HubRouteService {
     private final PredictDistanceAndDuration predictDistanceAndDuration;
     private final HubRouteRepository hubRouteRepository;
     private final HubService hubService;
+    private final CompanyPort companyPort;
+    private final AuthPort authPort;
+
+    private final AuthClient authClient;
 
     // 허브 경로 생성
     @Transactional
@@ -52,7 +60,9 @@ public class HubRouteService {
         // 출발 허브와 도착허브가 같지 않다면, 허브에서 바로 업체배송이 아닌 경우
         if (!request.fromHubId().equals(request.toHubId())) {
 
-            UUID hubDriverId = UUID.randomUUID(); //TODO 허브배송담당자 배정
+            // 허브 배송 담당자 배정 호출 TODO
+            UUID hubDriverId = UUID.randomUUID();
+//            authClient.getNextDriver(null);
 
             HubRoute findHubRoute = hubRouteRepository.findByFromHubIdAndToHubId(request.fromHubId(), request.toHubId());
 
@@ -80,20 +90,19 @@ public class HubRouteService {
 
         // 업체 배송은 따로 계산
         Hub fromHub = hubService.getHubAsHub(request.toHubId());
-//        Company toCompany =  TODO 컴퍼니 정보 요청
-        // 컴퍼니로 교체 예정
-        Hub toHub = hubService.getHubAsHub(request.fromHubId());
+        CompanyReadResponse companyData = companyPort.getCompany(request.toCompanyId());
 
-        // 예상 시간, 거리 계산                                                                                    컴퍼니로 교체 예정
-        GetDistanceAndDurationResponse companyPredictData = predictDistanceAndDuration.getDistanceAndDuration(fromHub, toHub);
+        // 예상 시간, 거리 계산
+        GetDistanceAndDurationResponse companyPredictData = predictDistanceAndDuration.getDistanceAndDuration(fromHub, companyData);
 
         res.add(new NavigateHubRouteResponse(
                 sequence,
 
                 fromHub.getId(),
-                UUID.randomUUID(),        // 컴퍼니로
+                request.toCompanyId(),        // 컴퍼니로
 
-                UUID.randomUUID(), //TODO 업체 배송담당자 배정
+                UUID.randomUUID(), //TODO 업체배송 지정
+//                authClient.getNextDriver(fromHub.getId()),
                 companyPredictData.distance(),
                 companyPredictData.duration()
         ));

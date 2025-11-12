@@ -7,6 +7,7 @@ import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.response.HubResponseCode;
 import com.mcargo.hubservice.application.dto.GetDistanceAndDurationResponse;
+import com.mcargo.hubservice.presentation.dto.CompanyReadResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,11 +20,11 @@ public class KakaoMapApi implements PredictDistanceAndDuration {
     private String kakaoRestApiKey;
 
     // 허브 이동 간 예상 대기 시간
-    public GetDistanceAndDurationResponse getDistanceAndDuration(Hub fromHub, Hub toHub) {
+    public GetDistanceAndDurationResponse getDistanceAndDuration(Object from, Object to) {
+        String jsonString = getRoute(toRoutingData(from), toRoutingData(to));
+
         long distance;
         long duration;
-
-        String jsonString = getRoute(transformHubToRoutingData(fromHub), transformHubToRoutingData(toHub));
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -48,20 +49,17 @@ public class KakaoMapApi implements PredictDistanceAndDuration {
                 duration
         );
     }
-    // TODO 컴퍼니 들어가도 작동하도록
-//    public GetDistanceAndDurationResponse getDistanceAndDuration(Hub fromHub, Company toCompany) {
-//        getDistanceAndDuration
-//    }
 
-    // 경도,위도 순으로 문자열로
-    private String transformHubToRoutingData(Hub hub) {
-        return (hub.getLongitude()).toString() +","+ (hub.getLatitude()).toString();
+    // 허브, 컴퍼니 데이터에서 경도,위도 데이터 추출 후 가공
+    private String toRoutingData(Object obj) {
+        if (obj instanceof Hub hub) {
+            return hub.getLongitude() + "," + hub.getLatitude();
+        }
+        else if (obj instanceof CompanyReadResponse company) {
+            return company.longitude() + "," + company.latitude();
+        }
+        throw new HubException(HubResponseCode.HUB_ROUTE_FAIL);
     }
-
-    // TODO 컴퍼니 변환도 만들어서 오버라이드 만들기
-//    private String transformCompanyToRoutingData(Company company) {
-//        return (company.getLongitude()).toString() +","+ (company.getLatitude()).toString();
-//    }
 
     private String getRoute(String origin, String destination) {
         // origin: "127.1086228,37.4012191"

@@ -16,6 +16,7 @@ public enum HubResponseCode implements ResponseCode {
     HUB_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 허브상품을 찾을 수 없습니다."),
     HUB_DRIVER_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 업무 가능한 업체배송담당자가 없습니다."),
     HUB_ROUTE_JSON_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "거리, 시간 예측 응답 JSON 파싱에 실패했습니다."),
+    HUB_ROUTE_FAIL(HttpStatus.BAD_REQUEST, "거리, 시간 예측을 지원하지 않는 타입입니다.")
     ;
 
     private final HttpStatus httpStatus;
