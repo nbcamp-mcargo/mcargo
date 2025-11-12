@@ -1,7 +1,7 @@
 package com.mcargo.orderservice.presentation.controller;
 
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.OrderResponseCode;
+import com.mcargo.orderservice.domain.response.OrderResponseCode;
 import com.mcargo.orderservice.application.service.OrderProductService;
 import com.mcargo.orderservice.presentation.dto.CreateOrderProductRequest;
 import com.mcargo.orderservice.presentation.dto.UpdateOrderProductRequest;

@@ -1,7 +1,7 @@
 package com.mcargo.orderservice.application.service;
 
-import com.mcargo.common.exception.OrderException;
-import com.mcargo.common.response.OrderResponseCode;
+import com.mcargo.orderservice.domain.exception.OrderException;
+import com.mcargo.orderservice.domain.response.OrderResponseCode;
 import com.mcargo.orderservice.domain.entity.Order;
 import com.mcargo.orderservice.domain.entity.OrderProduct;
 import com.mcargo.orderservice.domain.rerpository.OrderRepository;

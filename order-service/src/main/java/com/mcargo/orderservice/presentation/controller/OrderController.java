@@ -1,11 +1,10 @@
 package com.mcargo.orderservice.presentation.controller;
 
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.OrderResponseCode;
+import com.mcargo.orderservice.domain.response.OrderResponseCode;
 import com.mcargo.orderservice.application.service.OrderService;
 import com.mcargo.orderservice.presentation.dto.CreateOrderRequest;
 import com.mcargo.orderservice.presentation.dto.getOrderResponse;
-import com.mcargo.orderservice.presentation.dto.SearchOrderRequest;
 import com.mcargo.orderservice.presentation.dto.UpdateOrderRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +29,11 @@ public class OrderController {
 
     // 주문 목록 조회
     @GetMapping
-    public ApiResponse<Page<getOrderResponse>> getOrderAll(@RequestParam(defaultValue = "0") int page,
+    public ApiResponse<Page<getOrderResponse>> getOrderAll(
                                                            @RequestParam(defaultValue = "10") int size,
                                                            @RequestParam(defaultValue = "createAt") String sortBy,
                                                            @RequestParam(defaultValue = "true") Boolean isDescending) {
-        return ApiResponse.of(OrderResponseCode.ORDER_FOUND, orderService.getOrderAll(page, size, sortBy, isDescending));
+        return ApiResponse.of(OrderResponseCode.ORDER_FOUND, orderService.getOrderAll(size, sortBy, isDescending));
     }
 
     // 주문 상세 조회
@@ -59,8 +58,4 @@ public class OrderController {
         return ApiResponse.of(OrderResponseCode.ORDER_DELETED);
     }
 
-//    @GetMapping("/search")
-//    public ApiResponse<Page<getOrderResponse>> searchOrder(@RequestBody SearchOrderRequest request) {
-//        return ApiResponse.of(OrderResponseCode.ORDER_FOUND, OrderService.SearchOrder(request));
-//    }
 }
