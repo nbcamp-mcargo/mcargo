@@ -7,5 +7,5 @@ include 'order-service',
         'eureka-server',
         'common',
         'auth-service',
-        'company-service'
+        'company-service',
         'slack-service'
