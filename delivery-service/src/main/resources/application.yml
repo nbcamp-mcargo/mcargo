@@ -5,9 +5,9 @@ spring:
     import: optional:file:.env-delivery[.properties]
 
   datasource:
-    url: ${DELIVERY_DB_URL}
-    username: ${DELIVERY_DB_USERNAME}
-    password: ${DELIVERY_DB_PASSWORD}
+    url: ${DELIVERY_URL}
+    username: ${DELIVERY_USER}
+    password: ${DELIVERY_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:

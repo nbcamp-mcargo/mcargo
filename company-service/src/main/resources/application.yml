@@ -5,9 +5,9 @@ spring:
     import: optional:file:.env-company[.properties]
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${COMPANY_SERVICE_URL}
-    username: ${COMPANY_SERVICE_USERNAME}
-    password: ${COMPANY_SERVICE_PASSWORD}
+    url: ${COMPANY_URL}
+    username: ${COMPANY_USER}
+    password: ${COMPANY_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

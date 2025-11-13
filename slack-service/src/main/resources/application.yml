@@ -5,14 +5,14 @@ spring:
     import: optional:file:.env-slack[.properties]
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${SLACK_URL}
+    username: ${SLACK_USER}
+    password: ${SLACK_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: ${DDL_AUTO}
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -20,12 +20,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
-  port: ${PORT}
+  port: 19098
 
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVICE_URL}
+      defaultZone: http://localhost:19090/eureka/
 
 slack:
   token: ${SLACK_TOKEN}
