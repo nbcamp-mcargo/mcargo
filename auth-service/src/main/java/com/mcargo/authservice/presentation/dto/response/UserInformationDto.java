@@ -2,6 +2,8 @@ package com.mcargo.authservice.presentation.dto.response;
 
 import com.mcargo.common.auth.UserRole;
 
+import java.time.LocalDateTime;
+
 public record UserInformationDto(
     // 사용자명 (로그인 시 사용)
     String username,
@@ -10,7 +12,11 @@ public record UserInformationDto(
     // 이메일 주소
     String email,
     // 권한
-    UserRole role
+    UserRole role,
+    // 계정 생성일
+    LocalDateTime createdAt,
+    // 마지막 수정일
+    LocalDateTime updatedAt
 ) {
 
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum UserResponseCode implements ResponseCode {
     // http status code
+    USER_PENDING(HttpStatus.ACCEPTED, "승인 대기 중입니다. 관리자 승인 기다려주세요."),
     USER_CREATED(HttpStatus.CREATED, "새로운 사용자가 생성되었습니다."),
     USER_LOGIN(HttpStatus.OK, "사용자가 로그인 했습니다."),
     USER_LOGOUT(HttpStatus.OK, "사용자가 로그아웃 했습니다."),
@@ -23,12 +24,8 @@ public enum UserResponseCode implements ResponseCode {
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 리프레시 토큰입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-    MISSING_USER_ID(HttpStatus.UNAUTHORIZED, "X-User-Id 헤더 값이 누락되었습니다."),
-    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 X-User-Id 헤더입니다."),
-    MISSING_ROLE(HttpStatus.FORBIDDEN, "role 헤더 값이 누락되었습니다."),
-    NO_HTTP_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR, "현재 HTTP 요청이 없습니다."),
-    NO_REQUEST_AVAILABLE(HttpStatus.INTERNAL_SERVER_ERROR, "현재는 요청 불가능합니다."),
-    INSUFFICIENT_ROLE(HttpStatus.FORBIDDEN, "불충분한 역할입니다."),
+
+
     // duplicate data
     DUPLICATE_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 사용자명입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 존재하는 닉네임입니다."),

@@ -1,47 +1,60 @@
-//package com.mcargo.common.auth.aop;
-//
-//import com.mcargo.common.auth.UserRole;
-//import com.mcargo.common.auth.annotation.RequiredRoles;
-//import com.mcargo.common.exception.UserException;
-//import com.mcargo.common.response.UserResponseCode;
-//import jakarta.servlet.http.HttpServletRequest;
-//import java.lang.reflect.Method;
-//import java.util.Arrays;
-//import java.util.Set;
-//import java.util.stream.Collectors;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.aspectj.lang.ProceedingJoinPoint;
-//import org.aspectj.lang.annotation.Around;
-//import org.aspectj.lang.annotation.Aspect;
-//import org.aspectj.lang.reflect.MethodSignature;
-//import org.springframework.core.Ordered;
-//import org.springframework.core.annotation.Order;
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.context.request.RequestAttributes;
-//import org.springframework.web.context.request.RequestContextHolder;
-//import org.springframework.web.context.request.ServletRequestAttributes;
-//
-//@Slf4j
-//@Aspect
-//@Component
-//@Order(Ordered.HIGHEST_PRECEDENCE)
-//@RequiredArgsConstructor
-//public class RequiredRoleCheck {
-//
-//
-//    private static final String HEADER_ROLE = "X-Role";
-//
+package com.mcargo.common.auth.aop;
+
+import com.mcargo.common.auth.UserRole;
+import com.mcargo.common.auth.context.UserContext;
+import com.mcargo.common.auth.context.UserContextHolder;
+import com.mcargo.common.auth.context.annotation.RequiredRoles;
+import com.mcargo.common.exception.AuthException;
+import com.mcargo.common.response.AuthResponseCode;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Slf4j
+@Aspect
+@Component
+@RequiredArgsConstructor
+public class RequiredRoleCheck {
+
+    @Around("@annotation(requiredRoles)")
+    public Object checkRequiredRoles(
+        ProceedingJoinPoint joinPoint,
+        RequiredRoles requiredRoles) throws Throwable {
+        UserContext userContext = UserContextHolder.get();
+        System.out.println("userContext.getUserId() in RoleCheck = " + userContext.getUserId());
+        userContext.getRoles().forEach(role -> {
+            System.out.println("role = " + role);
+        });
+        if (userContext.getRoles() == null) {
+            throw new AuthException(AuthResponseCode.LOGIN_NEEDED);
+        }
+        List<UserRole> userRoles = userContext.getRoles();
+        UserRole[] requiredRolesArr = requiredRoles.value();
+        boolean allowed = Arrays
+            .stream(requiredRolesArr)
+            .anyMatch(userRoles::contains);
+        if (!allowed) {
+            throw new AuthException(AuthResponseCode.NO_ACCESS_RESOURCES);
+        }
+        return joinPoint.proceed();
+    }
+
 //    @Around("@target(com.mcargo.common.auth.annotation.RequiredRoles)")
 //    public Object checkRole(ProceedingJoinPoint pjp) throws Throwable {
 //        // 1 요청 객체에서 역할 헤더를 읽어줍니다.
 //        HttpServletRequest request = getCurrentHttpRequest();
 //        if (request == null) {
-//            throw new UserException(UserResponseCode.NO_HTTP_REQUEST);
+//            throw new AuthException(AuthResponseCode.NO_HTTP_REQUEST);
 //        }
 //        String roleHeader = request.getHeader(HEADER_ROLE);
 //        if (roleHeader == null || roleHeader.isBlank()) {
-//            throw new UserException(UserResponseCode.MISSING_ROLE);
+//            throw new AuthException(AuthResponseCode.MISSING_ROLE);
 //        }
 //        // 2 읽어야 할 허용 role 목록을 메서드 또는 클래스에서 찾아줍니다.
 //        MethodSignature signature = (MethodSignature) pjp.getSignature();
@@ -59,7 +72,7 @@
 //
 //        // roleHeader는 게이트웨이에서 전달한 값(ex: "MASTER")이라고 가정
 //        if (!allowed.contains(roleHeader)) {
-//            throw new UserException(UserResponseCode.INSUFFICIENT_ROLE,
+//            throw new AuthException(AuthResponseCode.INSUFFICIENT_ROLE,
 //                "required=" + allowed + " but was=" + roleHeader);
 //        }
 //        return pjp.proceed();
@@ -72,4 +85,4 @@
 //        }
 //        return null;
 //    }
-//}
+}

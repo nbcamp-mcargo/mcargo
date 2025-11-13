@@ -21,8 +21,10 @@ public class DeliveryDriverController {
      * @return
      */
     @GetMapping("/next-driver")
-    public UUID getNextDriver(@RequestParam(required = false) UUID hubId) {
-        return deliveryDriverService.getNextDriver(hubId);
+    public ApiResponse<UUID> getNextDriver(@RequestParam UUID hubId) {
+        UUID driver = deliveryDriverService.getNextDriver(hubId);
+
+        return ApiResponse.of(DriverResponseCode.USER_GET_NEXT_DRIVER, driver);
     }
 
     @PostMapping("/new-driver-seq")
