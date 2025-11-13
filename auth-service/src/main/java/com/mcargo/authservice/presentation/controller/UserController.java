@@ -1,12 +1,12 @@
 package com.mcargo.authservice.presentation.controller;
 
 import com.mcargo.authservice.application.service.UserService;
+import com.mcargo.authservice.domain.response.UserResponseCode;
 import com.mcargo.authservice.presentation.dto.request.UserLoginRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserSignUpRequestDto;
 import com.mcargo.authservice.presentation.dto.response.UserLoginResponseDto;
 import com.mcargo.authservice.presentation.dto.response.UserSignUpResponseDto;
 import com.mcargo.common.response.ApiResponse;
-import com.mcargo.common.response.UserResponseCode;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
