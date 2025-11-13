@@ -1,0 +1,313 @@
+version: "3.9"
+
+services:
+
+  # ----------------------------
+  # Eureka Server
+  # ----------------------------
+  eureka-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: eureka-server
+    image: mcargo/eureka-server:local
+    container_name: eureka-server
+    environment:
+      EUREKA_INSTANCE_HOSTNAME: eureka-server
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+    ports:
+      - "19090:19090"
+    restart: unless-stopped
+
+  # ----------------------------
+  # Gateway
+  # ----------------------------
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: gateway
+    image: mcargo/gateway:local
+    container_name: gateway
+    environment:
+      EUREKA_INSTANCE_HOSTNAME: gateway
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      JWT_KEY: ${JWT_KEY}
+    depends_on:
+      - eureka-server
+    ports:
+      - "19091:19091"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # AUTH SERVICE + DB
+  # ======================================================================
+  auth-db:
+    image: postgres:16-alpine
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: ${AUTH_USER}
+      POSTGRES_PASSWORD: ${AUTH_PASSWORD}
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: auth-service
+    image: mcargo/auth-service:local
+    container_name: auth-service
+    environment:
+      DB_URL: ${AUTH_URL}
+      DB_USERNAME: ${AUTH_USER}
+      DB_PASSWORD: ${AUTH_PASSWORD}
+      JWT_KEY: ${JWT_KEY}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: auth-service
+    depends_on:
+      auth-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19096:19096"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # DELIVERY SERVICE + DB
+  # ======================================================================
+  delivery-db:
+    image: postgres:16-alpine
+    container_name: delivery-db
+    environment:
+      POSTGRES_DB: deliverydb
+      POSTGRES_USER: ${DELIVERY_USER}
+      POSTGRES_PASSWORD: ${DELIVERY_PASSWORD}
+    volumes:
+      - delivery-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DELIVERY_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  delivery-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: delivery-service
+    image: mcargo/delivery-service:local
+    container_name: delivery-service
+    environment:
+      DB_URL: ${DELIVERY_URL}
+      DB_USERNAME: ${DELIVERY_USER}
+      DB_PASSWORD: ${DELIVERY_PASSWORD}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: delivery-service
+    depends_on:
+      delivery-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19097:19097"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # HUB SERVICE + DB
+  # ======================================================================
+  hub-db:
+    image: postgres:16-alpine
+    container_name: hub-db
+    environment:
+      POSTGRES_DB: hubdb
+      POSTGRES_USER: ${HUB_USER}
+      POSTGRES_PASSWORD: ${HUB_PASSWORD}
+    volumes:
+      - hub-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${HUB_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  hub-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: hub-service
+    image: mcargo/hub-service:local
+    container_name: hub-service
+    environment:
+      DB_URL: ${HUB_URL}
+      DB_USERNAME: ${HUB_USER}
+      DB_PASSWORD: ${HUB_PASSWORD}
+      KAKAO_API_KEY: ${KAKAO_API_KEY}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: hub-service
+    depends_on:
+      hub-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19094:19094"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # ORDER SERVICE + DB
+  # ======================================================================
+  order-db:
+    image: postgres:16-alpine
+    container_name: order-db
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: ${ORDER_USER}
+      POSTGRES_PASSWORD: ${ORDER_PASSWORD}
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ORDER_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: order-service
+    image: mcargo/order-service:local
+    container_name: order-service
+    environment:
+      DB_URL: ${ORDER_URL}
+      DB_USERNAME: ${ORDER_USER}
+      DB_PASSWORD: ${ORDER_PASSWORD}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: order-service
+    depends_on:
+      order-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19093:19093"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # SLACK SERVICE + DB
+  # ======================================================================
+  slack-db:
+    image: postgres:16-alpine
+    container_name: slack-db
+    environment:
+      POSTGRES_DB: slackdb
+      POSTGRES_USER: ${SLACK_USER}
+      POSTGRES_PASSWORD: ${SLACK_PASSWORD}
+    volumes:
+      - slack-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SLACK_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  slack-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: slack-service
+    image: mcargo/slack-service:local
+    container_name: slack-service
+    environment:
+      DB_URL: ${SLACK_URL}
+      DB_USERNAME: ${SLACK_USER}
+      DB_PASSWORD: ${SLACK_PASSWORD}
+      SLACK_TOKEN: ${SLACK_TOKEN}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: slack-service
+    depends_on:
+      slack-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19095:19095"
+    restart: unless-stopped
+
+
+  # ======================================================================
+  # COMPANY SERVICE + DB
+  # ======================================================================
+  company-db:
+    image: postgres:16-alpine
+    container_name: company-db
+    environment:
+      POSTGRES_DB: companydb
+      POSTGRES_USER: ${COMPANY_USER}
+      POSTGRES_PASSWORD: ${COMPANY_PASSWORD}
+    volumes:
+      - company-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${COMPANY_USER}"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  company-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: company-service
+    image: mcargo/company-service:local
+    container_name: company-service
+    environment:
+      DB_URL: ${COMPANY_URL}
+      DB_USERNAME: ${COMPANY_USER}
+      DB_PASSWORD: ${COMPANY_PASSWORD}
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
+      EUREKA_INSTANCE_HOSTNAME: company-service
+    depends_on:
+      company-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    ports:
+      - "19099:19099"
+    restart: unless-stopped
+
+
+volumes:
+  auth-db-data:
+  delivery-db-data:
+  hub-db-data:
+  order-db-data:
+  slack-db-data:
+  company-db-data:
