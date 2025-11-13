@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class UserContext {
+public class UserContext { // SecurityContextHolder를 대체하는 CustomConext
     private final Long userId;
     private final List<UserRole> roles;
 

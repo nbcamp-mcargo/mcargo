@@ -2,14 +2,15 @@ package com.mcargo.hubservice.infrastructure.Adapter;
 
 import com.mcargo.hubservice.domain.entity.Hub;
 import com.mcargo.hubservice.domain.entity.HubProduct;
+import com.mcargo.hubservice.domain.exception.HubException;
 import com.mcargo.hubservice.domain.repository.HubRepository;
+import com.mcargo.hubservice.domain.response.HubResponseCode;
 import com.mcargo.hubservice.infrastructure.jpa.HubJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,8 +29,8 @@ public class HubJpaRepositoryAdapter implements HubRepository {
 
     // 아이디로 허브 조회
     @Override
-    public Optional<Hub> findById(UUID hubId) {
-        return hubJpaRepository.findById(hubId);
+    public Hub findById(UUID hubId) {
+        return hubJpaRepository.findById(hubId).orElseThrow(() -> new HubException(HubResponseCode.HUB_NOT_FOUND));
     }
 
     // 전체 허브 조회(페이징)

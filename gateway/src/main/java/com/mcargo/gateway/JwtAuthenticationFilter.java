@@ -19,6 +19,9 @@ import reactor.core.publisher.Mono;
 import javax.crypto.SecretKey;
 import java.util.List;
 
+/**
+ * 이 클래스는 Spring Cloud Gateway 전용 JWT 인증 필터라서 WebFilter를 구현할 이유가 없습니다.
+ */
 @Slf4j
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter {
@@ -26,6 +29,11 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     private String secretKeyProp;
 
     private SecretKey secretKey;
+    // 필요한 변수
+    private String token;
+    private Claims claims;
+    private ServerHttpRequest newRequest;
+    private ServerWebExchange applyUsers;
 
     // 의존성 주입 후 초기화 수행하는 메서드
     @PostConstruct
@@ -42,6 +50,18 @@ public class JwtAuthenticationFilter implements GlobalFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+        /**
+         * 1. HTTP Request header -> Authroziation Header 존재 여부 확인
+         * 2. 해당 Authorization Header가 Bearer Token 인지 확인
+         * 3. Bearer Token이 JWT인지
+         * 4. 우리가 발급한 JWT 인지
+         * 5. JWT에서 Principal (UserId, UserRole) 추출
+         * 6. Http Rquest Header에 X-USER-ID, X-USER-ROLE 항목 설정 후 라우팅
+         *
+         * 7. 각 마이크로 서비스는 @CurrentUser(UserContext(X-USER-ID, X-USRE-ROLE)) -> CreatedBy, UpdatedBy
+         */
+        //
         String path = exchange.getRequest().getURI().getPath();
         System.out.println("path = " + path);
         // 화이트리스트 경로 패스 처리
@@ -52,45 +72,47 @@ public class JwtAuthenticationFilter implements GlobalFilter {
                 .doOnError(err -> log.info("Gateway이후 에러 발생" + err.getMessage()));
         }
         // Authorization(인가) 헤더에서 Bearer 토큰 추출
-        String token = extractToken(exchange);
+        // 1 HTTP Request header -> Authroziation Header 존재 여부 확인
+        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        log.info("authHeader: {} ", authHeader);
+        // 2 해당 Authorization Header가 Bearer Token 인지 확인
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        }
         log.info("token: {} ", token);
         if (token == null) {
             return unauthorized(exchange, "인가 헤더에 토큰이 없습니다.");
         }
-        Claims claims = validateToken(token);
-        System.out.println("claims = " + claims);
+        // 3 BearerToken이 JWT인지 확인
+        // 4 우리가 발급한 JWT인지 확인
+        try {
+            // JWT 검증
+            claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        } catch (Exception e) {
+            log.warn("JWT token validation failed: {}", e.getMessage());
+        }
         if (claims == null) {
-            return unauthorized(exchange, "인가 헤더에 유효 토큰이 없습니다.");
+            return unauthorized(exchange, "유효 JWT 토큰이 없습니다.");
         }
+        // 5 JWT에서 Principal (UserId, UserRole) 추출
+        // 6 Http Rquest Header에 X-USER-ID, X-USER-ROLE 항목 설정 후 라우팅
         ServerWebExchange mutableExchange = applyUserHeaders(exchange, claims);
-        return chain.filter(mutableExchange)
-            .doOnSuccess(v -> log.info("[JWT] {} 요청 성공", path))
-            .doOnError(e -> log.error("[JWT] {} 요청 실패: {}", path, e.getMessage()))
-            .doFinally(signal -> log.info("[JWT] 요청 종료"));
+        // 토큰 유효하면 그대로 다음 서비스로 전달
+        return chain.filter(mutableExchange);
     }
 
-    /**
-     * Authorization 헤더에서 Bearer 토큰 추출
-     *
-     * @param exchange
-     * @return String authHeader
-     */
-    private String extractToken(ServerWebExchange exchange) {
-        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        log.info("authHeader: {} ", authHeader);
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
-        }
-        return null;
-    }
 
     /**
-     * JWT 유효성 검사 및 Claim 반환
+     * JWT 유효성 검사
      *
      * @param token
      * @return
      */
-    private Claims validateToken(String token) {
+    private Claims ValidateToken(String token) {
         try {
             // JWT 검증
             return Jwts.parser()
@@ -104,13 +126,6 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         }
     }
 
-    /**
-     * Claims(Payload)에서 사용자 정보 헤더로 반환하여 전달
-     *
-     * @param exchange
-     * @param claims
-     * @return
-     */
     private ServerWebExchange applyUserHeaders(ServerWebExchange exchange, Claims claims) {
         ServerHttpRequest newRequest = exchange.getRequest().mutate()
             .header("X-USER-ID", claims.getSubject())

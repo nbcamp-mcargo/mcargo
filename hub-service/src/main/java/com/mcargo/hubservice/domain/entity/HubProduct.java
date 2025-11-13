@@ -40,4 +40,23 @@ public class HubProduct extends BaseEntity {
         if (status != null) this.status = status;
     }
 
+    public void checkable(int requestedQuantity) {
+        if(isSale()){
+            throw new HubBusinessException("")
+        }
+
+        if(isAvailableQuantity(requestedQuantity)){)
+            throw new HubBusinessException("")
+        }
+    }
+
+    public boolean isSale() {
+        return this status == status.SALE;
+    }
+
+    public boolean isAvailableQuantity(int requestedQuantity) {
+        return quantiy >= requestedQuantity;
+    }
+
+
 }

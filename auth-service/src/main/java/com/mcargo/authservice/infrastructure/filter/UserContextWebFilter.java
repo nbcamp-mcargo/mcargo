@@ -1,5 +1,27 @@
-package com.mcargo.gateway;
-
+//package com.mcargo.authservice.infrastructure.filter;
+//
+//import com.mcargo.common.auth.UserRole;
+//import com.mcargo.common.auth.context.UserContext;
+//import com.mcargo.common.auth.context.UserContextHolder;
+//import io.jsonwebtoken.Claims;
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.io.Decoders;
+//import io.jsonwebtoken.security.Keys;
+//import jakarta.annotation.PostConstruct;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.http.HttpHeaders;
+//import org.springframework.stereotype.Component;
+//import org.springframework.web.server.ServerWebExchange;
+//import org.springframework.web.server.WebFilter;
+//import org.springframework.web.server.WebFilterChain;
+//import reactor.core.publisher.Mono;
+//
+//import javax.crypto.SecretKey;
+//import java.util.Arrays;
+//import java.util.List;
+//
 //@Slf4j
 //@Component
 /// /@Order(2)
@@ -22,6 +44,7 @@ package com.mcargo.gateway;
 //    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 //        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 //        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            log.error("error for no exist jwt");
 //            return chain.filter(exchange);
 //        }
 //        String token = authHeader.substring(7);

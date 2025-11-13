@@ -75,16 +75,9 @@ public class User extends BaseEntity {
     /**
      * 사용자 정보 업데이트
      */
-    public void updateUser(String username, String nickname, String email) {
-        if (username != null) {
-            this.username = username;
-        }
-        if (nickname != null) {
-            this.nickname = nickname;
-        }
-        if (email != null) {
-            this.email = email;
-        }
+    public void updateUser(String username, String nickname) {
+        this.username = username;
+        this.nickname = nickname;
     }
 
     /**
