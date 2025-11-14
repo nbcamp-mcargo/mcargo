@@ -1,10 +1,8 @@
-version: "3.9"
-
 services:
 
-  # ----------------------------
-  # Eureka Server
-  # ----------------------------
+  # ======================================================================
+  # EUREKA SERVER
+  # ======================================================================
   eureka-server:
     build:
       context: .
@@ -13,16 +11,14 @@ services:
         SERVICE_NAME: eureka-server
     image: mcargo/eureka-server:local
     container_name: eureka-server
-    environment:
-      EUREKA_INSTANCE_HOSTNAME: eureka-server
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
     ports:
       - "19090:19090"
     restart: unless-stopped
 
-  # ----------------------------
-  # Gateway
-  # ----------------------------
+
+  # ======================================================================
+  # GATEWAY
+  # ======================================================================
   gateway:
     build:
       context: .
@@ -31,10 +27,6 @@ services:
         SERVICE_NAME: gateway
     image: mcargo/gateway:local
     container_name: gateway
-    environment:
-      EUREKA_INSTANCE_HOSTNAME: gateway
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      JWT_KEY: ${JWT_KEY}
     depends_on:
       - eureka-server
     ports:
@@ -50,12 +42,12 @@ services:
     container_name: auth-db
     environment:
       POSTGRES_DB: authdb
-      POSTGRES_USER: ${AUTH_USER}
-      POSTGRES_PASSWORD: ${AUTH_PASSWORD}
+      POSTGRES_USER: authdb
+      POSTGRES_PASSWORD: authpassword
     volumes:
       - auth-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${AUTH_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U authdb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -69,13 +61,6 @@ services:
         SERVICE_NAME: auth-service
     image: mcargo/auth-service:local
     container_name: auth-service
-    environment:
-      DB_URL: ${AUTH_URL}
-      DB_USERNAME: ${AUTH_USER}
-      DB_PASSWORD: ${AUTH_PASSWORD}
-      JWT_KEY: ${JWT_KEY}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: auth-service
     depends_on:
       auth-db:
         condition: service_healthy
@@ -94,12 +79,12 @@ services:
     container_name: delivery-db
     environment:
       POSTGRES_DB: deliverydb
-      POSTGRES_USER: ${DELIVERY_USER}
-      POSTGRES_PASSWORD: ${DELIVERY_PASSWORD}
+      POSTGRES_USER: deliverydb
+      POSTGRES_PASSWORD: deliverypassword
     volumes:
       - delivery-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DELIVERY_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U deliverydb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -113,12 +98,6 @@ services:
         SERVICE_NAME: delivery-service
     image: mcargo/delivery-service:local
     container_name: delivery-service
-    environment:
-      DB_URL: ${DELIVERY_URL}
-      DB_USERNAME: ${DELIVERY_USER}
-      DB_PASSWORD: ${DELIVERY_PASSWORD}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: delivery-service
     depends_on:
       delivery-db:
         condition: service_healthy
@@ -137,12 +116,12 @@ services:
     container_name: hub-db
     environment:
       POSTGRES_DB: hubdb
-      POSTGRES_USER: ${HUB_USER}
-      POSTGRES_PASSWORD: ${HUB_PASSWORD}
+      POSTGRES_USER: hubdb
+      POSTGRES_PASSWORD: hubpassword
     volumes:
       - hub-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${HUB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U hubdb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -156,13 +135,6 @@ services:
         SERVICE_NAME: hub-service
     image: mcargo/hub-service:local
     container_name: hub-service
-    environment:
-      DB_URL: ${HUB_URL}
-      DB_USERNAME: ${HUB_USER}
-      DB_PASSWORD: ${HUB_PASSWORD}
-      KAKAO_API_KEY: ${KAKAO_API_KEY}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: hub-service
     depends_on:
       hub-db:
         condition: service_healthy
@@ -181,12 +153,12 @@ services:
     container_name: order-db
     environment:
       POSTGRES_DB: orderdb
-      POSTGRES_USER: ${ORDER_USER}
-      POSTGRES_PASSWORD: ${ORDER_PASSWORD}
+      POSTGRES_USER: orderdb
+      POSTGRES_PASSWORD: orderpassword
     volumes:
       - order-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ORDER_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U orderdb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -200,12 +172,6 @@ services:
         SERVICE_NAME: order-service
     image: mcargo/order-service:local
     container_name: order-service
-    environment:
-      DB_URL: ${ORDER_URL}
-      DB_USERNAME: ${ORDER_USER}
-      DB_PASSWORD: ${ORDER_PASSWORD}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: order-service
     depends_on:
       order-db:
         condition: service_healthy
@@ -224,12 +190,12 @@ services:
     container_name: slack-db
     environment:
       POSTGRES_DB: slackdb
-      POSTGRES_USER: ${SLACK_USER}
-      POSTGRES_PASSWORD: ${SLACK_PASSWORD}
+      POSTGRES_USER: slackdb
+      POSTGRES_PASSWORD: slackpassword
     volumes:
       - slack-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SLACK_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U slackdb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -243,14 +209,6 @@ services:
         SERVICE_NAME: slack-service
     image: mcargo/slack-service:local
     container_name: slack-service
-    environment:
-      DB_URL: ${SLACK_URL}
-      DB_USERNAME: ${SLACK_USER}
-      DB_PASSWORD: ${SLACK_PASSWORD}
-      SLACK_TOKEN: ${SLACK_TOKEN}
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: slack-service
     depends_on:
       slack-db:
         condition: service_healthy
@@ -269,12 +227,12 @@ services:
     container_name: company-db
     environment:
       POSTGRES_DB: companydb
-      POSTGRES_USER: ${COMPANY_USER}
-      POSTGRES_PASSWORD: ${COMPANY_PASSWORD}
+      POSTGRES_USER: companydb
+      POSTGRES_PASSWORD: companypassword
     volumes:
       - company-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${COMPANY_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U companydb"]
       interval: 3s
       timeout: 3s
       retries: 5
@@ -288,12 +246,6 @@ services:
         SERVICE_NAME: company-service
     image: mcargo/company-service:local
     container_name: company-service
-    environment:
-      DB_URL: ${COMPANY_URL}
-      DB_USERNAME: ${COMPANY_USER}
-      DB_PASSWORD: ${COMPANY_PASSWORD}
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:19090/eureka/
-      EUREKA_INSTANCE_HOSTNAME: company-service
     depends_on:
       company-db:
         condition: service_healthy
