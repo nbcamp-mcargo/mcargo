@@ -15,7 +15,7 @@ public enum UserResponseCode implements ResponseCode {
     USER_LOGOUT(HttpStatus.OK, "사용자가 로그아웃 했습니다."),
     USER_LIST(HttpStatus.OK, "사용자 목록 조회되었습니다."),
     USER_ONE(HttpStatus.OK, "특정 사용자 조회되었습니다."),
-    USER_ME(HttpStatus.OK, "내 정보 조회합니다."),
+    USER_ME(HttpStatus.OK, "내 정보 조회되었습니다."),
     USER_UPDATE(HttpStatus.OK, "내 정보 수정합니다."),
     USER_SEARCH(HttpStatus.OK, "조건으로 사용자 목록 조회되었습니다."),
     USER_WITHDRAW(HttpStatus.NO_CONTENT, "유저 탈퇴 요청을 성공했습니다."),
@@ -24,7 +24,8 @@ public enum UserResponseCode implements ResponseCode {
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다."),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 리프레시 토큰입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
-
+    // authorization error code
+    NOT_AUTHORIZED(HttpStatus.UNAUTHORIZED, "허용 권한 없는 사용자입니다."),
 
     // duplicate data
     DUPLICATE_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 사용자명입니다."),

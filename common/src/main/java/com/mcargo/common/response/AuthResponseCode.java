@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum AuthResponseCode implements ResponseCode {
     // 권한 status code
     MISSING_USER_ID(HttpStatus.UNAUTHORIZED, "X-USER-ID 헤더 값이 누락되었습니다."),
+    MISSING_USER_ROLE(HttpStatus.UNAUTHORIZED, "X-USER-ROLE 헤더 값이 누락되었습니다."),
     INVALID_USER_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 X-USER-ID 헤더입니다."),
     NO_HTTP_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR, "현재 HTTP 요청이 없습니다."),
     NO_REQUEST_AVAILABLE(HttpStatus.INTERNAL_SERVER_ERROR, "현재는 요청 불가능합니다."),

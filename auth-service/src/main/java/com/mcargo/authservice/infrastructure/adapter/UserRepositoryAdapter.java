@@ -52,6 +52,8 @@ public class UserRepositoryAdapter implements UserRepository {
     // 검색 메서드들
     @Override
     public Page<User> searchUsers(String username, String email, Pageable pageable) {
+        System.out.println("username = " + username);
+        System.out.println("email = " + email);
         return userJpaRepository.searchUsers(username, email, pageable);
     }
 

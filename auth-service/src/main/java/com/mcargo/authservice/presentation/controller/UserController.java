@@ -6,16 +6,17 @@ import com.mcargo.authservice.domain.response.UserResponseCode;
 import com.mcargo.authservice.presentation.dto.request.UserDeleteRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserLoginRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserSignUpRequestDto;
-import com.mcargo.authservice.presentation.dto.response.LogoutResponseDto;
-import com.mcargo.authservice.presentation.dto.response.UserDeleteResponseDto;
-import com.mcargo.authservice.presentation.dto.response.UserLoginResponseDto;
-import com.mcargo.authservice.presentation.dto.response.UserSignUpResponseDto;
+import com.mcargo.authservice.presentation.dto.request.UserUpdateRequestDto;
+import com.mcargo.authservice.presentation.dto.response.*;
 import com.mcargo.common.auth.context.annotation.CurrentUser;
 import com.mcargo.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/auths")
 @RequiredArgsConstructor
@@ -54,24 +55,34 @@ public class UserController {
     }
 
     @GetMapping
-    public ApiResponse<Void> getUsers() {
-        return ApiResponse.of(UserResponseCode.USER_LIST);
+    public ApiResponse<Page<UserInformationDto>> getAllUsers(
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "true") Boolean isDescending
+    ) {
+        Page<UserInformationDto> responseDto = userService.getAllUsers(size, sortBy, isDescending);
+        return ApiResponse.of(UserResponseCode.USER_LIST, responseDto);
     }
 
     @GetMapping("/{userId}")
-    public ApiResponse<Void> getUser(@PathVariable Long userId) {
-        return ApiResponse.of(UserResponseCode.USER_ONE);
+    public ApiResponse<UserInformationDto> getUser(@PathVariable Long userId) {
+        UserInformationDto responseDto = userService.getUser(userId);
+        return ApiResponse.of(UserResponseCode.USER_ONE, responseDto);
     }
 
     @GetMapping("/me")
-    public ApiResponse<Void> getUserProfile(@CurrentUser Long userId) {
-
-        return ApiResponse.of(UserResponseCode.USER_ME);
+    public ApiResponse<UserInformationDto> getUserProfile(@CurrentUser Long userId) {
+        UserInformationDto responseDto = userService.getUserProfile(userId);
+        log.info("getUserProfile END");
+        return ApiResponse.of(UserResponseCode.USER_ME, responseDto);
     }
 
     @PutMapping("/me")
-    public ApiResponse<Void> updateUserProfile() {
-        return ApiResponse.of(UserResponseCode.USER_UPDATE);
+    public ApiResponse<UserUpdateResponseDto> updateUserProfile(
+        @CurrentUser Long userId,
+        @Valid @RequestBody UserUpdateRequestDto requestDto) {
+        UserUpdateResponseDto responseDto = userService.updateUser(userId, requestDto);
+        return ApiResponse.of(UserResponseCode.USER_UPDATE, responseDto);
     }
 
     @DeleteMapping("/me")
@@ -83,9 +94,18 @@ public class UserController {
         return ApiResponse.of(UserResponseCode.USER_WITHDRAW, responseDto);
     }
 
+    // 사용자명, 이메일로 회원 검색
     @GetMapping("/search")
-    public ApiResponse<Void> searchUser(@RequestParam String username, @RequestParam String email) {
-        return ApiResponse.of(UserResponseCode.USER_SEARCH);
+    public ApiResponse<Page<UserInformationDto>> searchUser(
+        @RequestParam(required = false) String username,
+        @RequestParam(required = false) String email,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "createdAt") String sortBy,
+        @RequestParam(defaultValue = "true") Boolean isDescending
+    ) {
+        Page<UserInformationDto> responseDto = userService.searchUser(
+            username, email, size, sortBy, isDescending);
+        return ApiResponse.of(UserResponseCode.USER_SEARCH, responseDto);
     }
 
 //    @PostMapping("/refresh")
