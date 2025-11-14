@@ -1,0 +1,49 @@
+### 회원 생성
+POST http://localhost:19091/auths/signUp
+Content-Type: application/json
+
+{
+  "username": "manager1",
+  "nickname": "mgr1",
+  "email": "mgr1@email.com",
+  "password": "Hash123!",
+  "role": "MASTER"
+}
+
+### 배송 생성
+
+
+### 배송 생성
+POST http://localhost:19091/deliveries
+Content-Type: application/json
+
+{
+  "orderId": "550e8400-e29b-41d4-a716-446655440012",
+  "fromHubId": "550e8400-e29b-41d4-a716-446655440001",
+  "toHubId": "550e8400-e29b-41d4-a716-446655440002",
+  "address": "서울 송파구",
+  "receiverUserId": 1,
+  "receiverSlackId": "dlwlmds0895@gmail.com"
+}
+
+### 회원 생성
+GET http://localhost:19096/auths
+
+### 로그인
+POST http://localhost:19091/auths/login
+Content-Type: application/json
+
+{
+  "email": "mgr1@email.com",
+  "password": "Hash123!"
+}
+
+> {%
+    client.global.set("access_token", response.body.data.accessToken)
+    client.log("test: " + client.global.get("access_token"))
+%}
+
+### 내 정보 조회
+GET http://localhost:19091/auths/me
+Authorization:Bearer {{access_token}}
+
