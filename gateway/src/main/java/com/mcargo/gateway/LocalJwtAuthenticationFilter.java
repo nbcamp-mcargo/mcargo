@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class LocalJwtAuthenticationFilter implements GlobalFilter {
 
-    @Value("${service.jwt.secret-key}")
+    @Value("${JWT_SECRET_KEY}")
     private String secretKeyProp;
 
     private SecretKey secretKey;

@@ -28,7 +28,7 @@ public class JwtUtil {
     @Value("${spring.application.name}")
     private String issuer;
 
-    @Value("${service.jwt.secret-key}")
+    @Value("${JWT_SECRET_KEY}")
     private String secretKeyProp;
 
     @Value("${service.jwt.access-expiration}")
