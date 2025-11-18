@@ -1,6 +1,5 @@
 package com.mcargo.authservice.application.service;
 
-import com.mcargo.authservice.JwtUtil;
 import com.mcargo.authservice.domain.entity.RefreshToken;
 import com.mcargo.authservice.domain.entity.User;
 import com.mcargo.authservice.domain.entity.UserStatus;
@@ -8,14 +7,17 @@ import com.mcargo.authservice.domain.exception.UserException;
 import com.mcargo.authservice.domain.repository.RefreshTokenRepository;
 import com.mcargo.authservice.domain.repository.UserRepository;
 import com.mcargo.authservice.domain.response.UserResponseCode;
+import com.mcargo.authservice.infrastructure.util.JwtUtil;
 import com.mcargo.authservice.presentation.dto.request.UserDeleteRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserLoginRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserSignUpRequestDto;
 import com.mcargo.authservice.presentation.dto.request.UserUpdateRequestDto;
 import com.mcargo.authservice.presentation.dto.response.*;
+import com.mcargo.common.auth.UserRole;
 import com.mcargo.common.util.PageingUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -65,12 +68,21 @@ public class UserService {
     // MASTER나 HUB_MANAGER 승인
     @Transactional
     public UserSignUpResponseDto approveUser(Long userId, Long approverId) {
+        // 1 관리자인지 확인
+        User manager = userRepository.findActiveById(approverId)
+            .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
+        if (!(manager.getRole() == UserRole.MASTER || manager.getRole() == UserRole.HUB_MANAGER)) {
+            throw new UserException(UserResponseCode.NOT_AUTHORIZED);
+        }
+        System.out.println("manager.getRole() = " + manager.getRole());
+
         User user = userRepository.findActiveById(userId)
             .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
-        user.updateStatus(UserStatus.APPROVED, approverId);
+        System.out.println("before user.getStatus() = " + user.getStatus());
+        user.updateStatus(UserStatus.APPROVED, userId);
+        System.out.println("after user.getStatus() = " + user.getStatus());
 
         userRepository.save(user);
-        System.out.println("user.getStatus() = " + user.getStatus());
         return new UserSignUpResponseDto(
             user.getUsername(),
             user.getNickname(),
@@ -104,7 +116,7 @@ public class UserService {
             .orElseThrow(() -> new UserException(UserResponseCode.INVALID_LOGIN_CREDENTIALS));
         // 2 사용자 상태 검증 (APPROVED 상태만 로그인 허용)
         if (user.getStatus() != UserStatus.APPROVED) {
-            throw new UserException(UserResponseCode.INVALID_LOGIN_CREDENTIALS);
+            throw new UserException(UserResponseCode.NOT_AUTHORIZED);
         }
         // 3 비밀번호 검증
         if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
@@ -138,7 +150,7 @@ public class UserService {
     public LogoutResponseDto logout(Long userId) {
         // 1 사용자 조회
         User user = userRepository.findActiveById(userId)
-            .orElseThrow(() -> null);
+            .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
         System.out.println("user = " + user);
         System.out.println("user.getUsername() = " + user.getUsername());
         System.out.println("user.getEmail() = " + user.getEmail());
@@ -172,6 +184,20 @@ public class UserService {
                 user.getCreatedAt(),
                 user.getUpdatedAt()
             )
+        );
+    }
+
+    @Transactional
+    public UserInformationDto getUser(Long userId) {
+        User user = userRepository.findActiveById(userId)
+            .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
+        return new UserInformationDto(
+            user.getUsername(),
+            user.getNickname(),
+            user.getEmail(),
+            user.getRole(),
+            user.getCreatedAt(),
+            user.getUpdatedAt()
         );
     }
 
@@ -214,10 +240,18 @@ public class UserService {
         // 1 사용자 조회
         User user = userRepository.findActiveById(userId)
             .orElseThrow(() -> new UserException(UserResponseCode.USER_NOT_FOUND));
+        log.info("my information print!!");
+        log.info("user.getUsername() = " + user.getUsername());
+        log.info("user.getEmail() = " + user.getEmail());
+        log.info("user.getRole() = " + user.getRole());
         // 2 사용자 정보 객체에 정보 담아 반환
         return new UserInformationDto(
-            user.getUsername(), user.getNickname(), user.getEmail(),
-            user.getRole(), user.getCreatedAt(), user.getUpdatedAt()
+            user.getUsername(),
+            user.getNickname(),
+            user.getEmail(),
+            user.getRole(),
+            user.getCreatedAt(),
+            user.getUpdatedAt()
         );
     }
 

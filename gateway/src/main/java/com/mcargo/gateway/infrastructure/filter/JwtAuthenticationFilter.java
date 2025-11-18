@@ -1,4 +1,4 @@
-package com.mcargo.gateway;
+package com.mcargo.gateway.infrastructure.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         String path = exchange.getRequest().getURI().getPath();
         System.out.println("path = " + path);
         // 화이트리스트 경로 패스 처리
-        if (WHITE_LIST.stream().anyMatch(path::contains)) {
+        if (WHITE_LIST.stream().anyMatch(path::startsWith)) {
             System.out.println("whitelist in!!");
             return chain.filter(exchange)
                 .doOnSuccess(aVoid -> log.info("Gateway 요청 전달 완료"))

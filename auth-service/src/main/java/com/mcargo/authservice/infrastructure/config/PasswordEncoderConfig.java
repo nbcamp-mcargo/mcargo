@@ -1,4 +1,4 @@
-package com.mcargo.authservice.config;
+package com.mcargo.authservice.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
