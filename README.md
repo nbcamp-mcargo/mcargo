@@ -132,3 +132,37 @@ Gradle을 통해 Spring Boot 애플리케이션을 실행합니다.
 ./gradlew bootRun
 ```
 
+---
+
+# 📊 설계 산출물
+
+## 1️⃣ Domain Diagram
+
+도메인 간 관계 및 책임을 정의한 다이어그램입니다.
+<img width="2157" height="1452" alt="도메인 다이어그램_Domain Diagram" src="https://github.com/user-attachments/assets/4835ace1-e9fc-404c-9e2c-62cdd112318c" />
+
+
+---
+
+## 2️⃣ Sequence Diagram
+
+주요 배송 및 주문흐름을 나타낸 시퀀스 다이어그램입니다.
+<img width="3197" height="5872" alt="배송 시퀀스 변경(2)" src="https://github.com/user-attachments/assets/c94cab29-3031-4709-bb3f-c0e0f0534a1d" />
+
+
+---
+
+## 3️⃣ ERD
+
+데이터베이스 테이블 구조 및 관계를 정의한 ERD입니다.
+<img width="1309" height="760" alt="ERD 최종" src="https://github.com/user-attachments/assets/f683ff8b-b3ac-44ef-8633-55c7ef0d3454" />
+
+
+---
+
+##  4️⃣ Infrastructure Architecture
+
+Eureka를 활용한 Service Discovery와 Docker 컨테이너 기반의 배포 구조입니다.
+<img width="3786" height="3012" alt="인프라 설계서" src="https://github.com/user-attachments/assets/dea369f5-8b10-43f4-afbe-2c6f549be0fa" />
+
+---
